@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diana_gripper_gazebo">
+
+  <!-- optional Gazebo stuff for the SCservo diana gripper / hand
+       - model plugin (joint_states)
+       - tool-mount F/T sensor
+       - IMU plugin
+       - note: no force sensors for the grasp handle faces (yet)
+
+       To debug all of this crap:
+       rosrun xacro xacro urdf/diana_gripper.xacro > /tmp/brokengazebo.urdf
+       gz sdf -p /tmp/brokengazebo.urdf > /tmp/brokengazebo.sdf
+       and then muse at all the silently removed plugins :-(
+  -->
+
+  <xacro:macro name="diana_gripper_control_plugin" params="name">
+    <gazebo>
+      <plugin name="${name}_gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <!-- <robotParam>${name}_description</robotParam> --> <!-- URDF name on param server -->
+        <robotNamespace>/${name}</robotNamespace>
+        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        <legacyModeNS>true</legacyModeNS>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+
+</robot>

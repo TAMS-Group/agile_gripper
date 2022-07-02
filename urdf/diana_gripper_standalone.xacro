@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diana_gripper_standalone">
+
+  <!-- standalone urdf/xacro of the two-finger four-servo gripper
+  
+       2022.07.02 - created (re-factored)
+
+       (C) 2022, fnh, hendrich@informatik.uni-hamburg.de
+   -->
+
+  <xacro:include filename="$(find diana_gripper)/urdf/diana_gripper.xacro" />
+
+
+  <xacro:diana_gripper name="diana_gripper" />
+
+  <link name="world" />
+
+  <joint name="world_diana_gripper_joint" type="fixed" >
+   <parent link="world" />
+   <child  link="diana_gripper" />
+   <origin xyz="0 0 0.1" rpy="0 0 0" />
+  </joint>
+
+</robot>

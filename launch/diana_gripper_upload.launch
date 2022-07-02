@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- (re-) upload the diana_gripper URDF model and default calibration to the param server -->
+
+
+  <!-- upload the robot xacro/urdf to the param server -->
+  <param name="qbsc_gripper_description" 
+         command="$(find xacro)/xacro $(find diana_gripper)/urdf/diana_gripper_standalone.xacro" />
+
+  <param name="robot_description" 
+         command="$(find xacro)/xacro $(find diana_gripper)/urdf/diana_gripper_standalone.xacro" />
+
+
+  <!-- upload the hand calibration -->
+  <rosparam file="$(find diana_gripper)/config/diana_gripper_calibration.yaml" command="load"/>
+
+  <!-- upload joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find diana_gripper)/config/diana_gripper_gazebo_controllers.yaml" command="load"/>
+
+
+</launch>

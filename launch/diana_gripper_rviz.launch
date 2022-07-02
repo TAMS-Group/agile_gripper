@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- launch the SCservo diana gripper (two fingers, four servos) in rviz -->
+
+  <!-- upload the robot xacro/urdf to the param server -->
+  <param name="robot_description" 
+         command="$(find xacro)/xacro $(find diana_gripper)/urdf/diana_gripper_standalone.xacro" />
+
+  <!-- publishes robot-state tf -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" respawn="false"
+        name="diana_gripper_state_publisher">
+     <param name="publish_frequency" type="double" value="100.0" />
+     <param name="tf_prefix" type="string" value="" />
+     <param name="robot_description" command="$(find xacro)/xacro $(find diana_gripper)/urdf/diana_gripper_standalone.xacro" />  
+     <remap from="joint_states" to="diana_gripper/joint_states" />
+  </node>
+
+  <!-- 
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <remap from="joint_states" to="diana_gripper/joint_states" />
+  </node>
+  -->
+
+  <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui">
+    <remap from="joint_states" to="diana_gripper/joint_states" />
+  </node>
+
+
+  <node name="rviz" pkg="rviz" type="rviz" respawn="false" output="screen"
+        args="-d $(find diana_gripper)/config/diana_gripper_demo.rviz" />
+
+</launch>
