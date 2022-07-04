@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="imu_gy521">
+
+  <!-- basic CAD model of the GY-521 breakout board with MPU-6050 IMU chip -->
+
+  <xacro:macro name="imu_gy521" params="name parent *origin">
+
+    <link name="${name}">
+        <inertial>
+          <origin xyz="0.0 0.0 0.0" />
+          <mass value="0.005" />
+          <inertia  ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.00001" />
+        </inertial>
+        <visual>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+          <material name="${name}_material" >
+            <color rgba="0.0 0.0 0.7 1.0" />
+          </material> 
+          <geometry>
+           <mesh filename="package://diana_gripper/meshes/imu_gy521.stl" scale="0.001 0.001 0.001" />
+         </geometry>
+        </visual>
+        <collision>
+          <geometry>
+           <mesh filename="package://diana_gripper/meshes/imu_gy521.stl" scale="0.001 0.001 0.001" />
+         </geometry>
+        </collision>
+    </link>
+
+    <gazebo reference="${name}">
+        <material>Gazebo/Blue</material>
+        <turnGravityOff>false</turnGravityOff>
+        <selfCollide>true</selfCollide>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <kp>1000000.0</kp>
+        <kd>1.0</kd>
+    </gazebo>
+
+    <joint name="${name}_joint" type="fixed"> 
+      <parent link="${parent}" />
+      <child  link="${name}" />
+      <xacro:insert_block name="origin" />
+    </joint>
+
+  </xacro:macro>
+
+</robot>

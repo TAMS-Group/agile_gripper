@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="fingertip">
+
+
+  <xacro:macro name="fingertip" params="name radius rgba gmaterial" >
+
+    <!-- standard servo size: 20x20x40 millimeters, about 100 grams, axis at z=10millimeters -->
+    <link name="${name}">
+        <inertial>
+          <origin xyz="0.0 0.0 0.01" />
+          <mass value="0.01" />
+          <inertia  ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001" /> 
+        </inertial>
+        <visual>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+          <material name="${name}_material" >
+            <color rgba="${rgba}" />
+          </material> 
+          <geometry>
+            <sphere radius="${radius}" />
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+          <geometry>
+            <sphere radius="${radius}" />
+          </geometry>
+        </collision>
+    </link>
+  
+    <gazebo reference="${name}">
+        <material>${gmaterial}</material>
+        <gravity>true</gravity>
+        <selfCollide>true</selfCollide>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <maxVel>0.5</maxVel>
+        <minDepth>0.001</minDepth>
+        <maxContacts>3</maxContacts>
+        <dampingFactor>0.1</dampingFactor>
+        <laserRetro>0.6</laserRetro>
+        <!-- 
+        <fdir>x,y,z direction of mu1 in collision frame</fdir>
+        <kp>1000000.0</kp>
+        <kd>1.0</kd>
+        <turnGravityOff>false</turnGravityOff>
+        -->
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>
