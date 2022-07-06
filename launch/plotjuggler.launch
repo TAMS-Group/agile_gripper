@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="layout" default="plotjuggler-layout.xml" />
+  <arg name="priority" default="20" />
+
+
+  <!-- launch plotjuggler with predefined layout and reduced (nice) priority 
+       (c) 2020 fnh, hendrich@informatik.uni-hamburg.de
+  -->
+
+
+  <node name="plotjuggler_with_layout" 
+        pkg="plotjuggler"
+        type="plotjuggler"
+        args="--layout $(find diana_gripper)/config/$(arg layout)" 
+        launch-prefix="nice -n $(arg priority)"
+  />
+
+
+</launch>
