@@ -7,7 +7,7 @@
 
   <arg name="use_sim_time" default="false" />
   <arg name="debug"        default="false" />
-  <arg name="start_world_diana_gripper_tf_publisher"  default="false" />
+  <arg name="start_world_diana_gripper_tf_publisher"  default="true" />
 
 
   <!-- upload the robot xacro/urdf to the param server -->
@@ -27,7 +27,7 @@
 
   <!-- the driver node, talking to the gripper using the specifed port and (virtual) baudrate -->
   <node pkg="diana_gripper" type="diana_gripper.py" name="diana_gripper" output="screen" >
-        <param name="rate_hz" value="1111" />
+        <param name="rate_hz" value="125" />
         <param name="baud_rate" value="115200" />
         <param name="port_name" value="/dev/ttyACM0" />
         <!-- <remap from="joint_states" to=" /> -->
@@ -57,6 +57,12 @@
      <remap from="joint_states" to="diana_gripper/joint_states" />
   </node>
   -->
+
+
+  <node pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" name="joint_state_publisher" respawn="false">
+     <param name="rate" value="10.0" />
+     <remap from="joint_states" to="diana_gripper/joint_goals" />
+  </node>
 
 
   <!-- the FollowJointTrajectoryAction server (e.g. needed for Moveit) -->

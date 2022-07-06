@@ -62,7 +62,7 @@ Visualization Manager:
       Collision Enabled: false
       Enabled: true
       Links:
-        All Links Enabled: false
+        All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
@@ -81,7 +81,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         diana_gripper/left_finger_distal_bracket:
           Alpha: 1
           Show Axes: false
@@ -112,6 +112,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        diana_gripper/left_finger_imu:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         diana_gripper/left_finger_proximal_servo:
           Alpha: 1
           Show Axes: false
@@ -127,6 +132,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        diana_gripper/left_finger_tip_mount:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         diana_gripper/right_finger_connector:
           Alpha: 1
           Show Axes: false
@@ -136,7 +145,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: false
+          Value: true
         diana_gripper/right_finger_distal_bracket:
           Alpha: 1
           Show Axes: false
@@ -167,6 +176,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        diana_gripper/right_finger_imu:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         diana_gripper/right_finger_proximal_servo:
           Alpha: 1
           Show Axes: false
@@ -182,6 +196,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        diana_gripper/right_finger_tip_mount:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         world:
           Alpha: 1
           Show Axes: false
@@ -196,31 +214,35 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: false
+        All Enabled: true
         diana_gripper:
-          Value: false
+          Value: true
         diana_gripper/left_finger_connector:
-          Value: false
+          Value: true
         diana_gripper/left_finger_digit_sensor:
-          Value: false
+          Value: true
         diana_gripper/left_finger_distal_bracket:
           Value: true
         diana_gripper/left_finger_distal_servo:
           Value: true
         diana_gripper/left_finger_distal_servo/front_axle_plate:
-          Value: false
+          Value: true
         diana_gripper/left_finger_distal_servo/rear_axle_plate:
-          Value: false
+          Value: true
         diana_gripper/left_finger_fingertip:
           Value: true
         diana_gripper/left_finger_finray:
           Value: true
+        diana_gripper/left_finger_imu:
+          Value: true
         diana_gripper/left_finger_proximal_servo:
-          Value: false
+          Value: true
         diana_gripper/left_finger_proximal_servo/front_axle_plate:
-          Value: false
+          Value: true
         diana_gripper/left_finger_proximal_servo/rear_axle_plate:
-          Value: false
+          Value: true
+        diana_gripper/left_finger_tip_mount:
+          Value: true
         diana_gripper/right_finger_connector:
           Value: true
         diana_gripper/right_finger_digit_sensor:
@@ -228,25 +250,29 @@ Visualization Manager:
         diana_gripper/right_finger_distal_bracket:
           Value: true
         diana_gripper/right_finger_distal_servo:
-          Value: false
+          Value: true
         diana_gripper/right_finger_distal_servo/front_axle_plate:
-          Value: false
+          Value: true
         diana_gripper/right_finger_distal_servo/rear_axle_plate:
-          Value: false
+          Value: true
         diana_gripper/right_finger_fingertip:
-          Value: false
+          Value: true
         diana_gripper/right_finger_finray:
           Value: true
+        diana_gripper/right_finger_imu:
+          Value: true
         diana_gripper/right_finger_proximal_servo:
-          Value: false
+          Value: true
         diana_gripper/right_finger_proximal_servo/front_axle_plate:
-          Value: false
+          Value: true
         diana_gripper/right_finger_proximal_servo/rear_axle_plate:
-          Value: false
+          Value: true
+        diana_gripper/right_finger_tip_mount:
+          Value: true
         world:
-          Value: false
+          Value: true
       Marker Alpha: 1
-      Marker Scale: 0.15000000596046448
+      Marker Scale: 0.10000000149011612
       Name: TF
       Show Arrows: false
       Show Axes: true
@@ -258,10 +284,14 @@ Visualization Manager:
               diana_gripper/left_finger_connector:
                 diana_gripper/left_finger_distal_servo:
                   diana_gripper/left_finger_distal_bracket:
-                    diana_gripper/left_finger_fingertip:
+                    diana_gripper/left_finger_tip_mount:
                       diana_gripper/left_finger_digit_sensor:
                         {}
+                      diana_gripper/left_finger_fingertip:
+                        {}
                       diana_gripper/left_finger_finray:
+                        {}
+                      diana_gripper/left_finger_imu:
                         {}
                   diana_gripper/left_finger_distal_servo/front_axle_plate:
                     {}
@@ -275,10 +305,14 @@ Visualization Manager:
               diana_gripper/right_finger_connector:
                 diana_gripper/right_finger_distal_servo:
                   diana_gripper/right_finger_distal_bracket:
-                    diana_gripper/right_finger_fingertip:
+                    diana_gripper/right_finger_tip_mount:
                       diana_gripper/right_finger_digit_sensor:
                         {}
+                      diana_gripper/right_finger_fingertip:
+                        {}
                       diana_gripper/right_finger_finray:
+                        {}
+                      diana_gripper/right_finger_imu:
                         {}
                   diana_gripper/right_finger_distal_servo/front_axle_plate:
                     {}
@@ -400,7 +434,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 0.3595813810825348
+      Distance: 0.4134657382965088
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -408,17 +442,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0.02449130453169346
-        Y: -0.03195187821984291
-        Z: 0.22790992259979248
+        X: 0.012178046628832817
+        Y: -0.008008705452084541
+        Z: 0.2069864720106125
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: -0.0052028680220246315
+      Pitch: -0.04520372301340103
       Target Frame: <Fixed Frame>
-      Yaw: 4.616852760314941
+      Yaw: 1.6386830806732178
     Saved: ~
 Window Geometry:
   Displays:
@@ -440,5 +474,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1390
-  X: 454
+  X: 444
   Y: 0
