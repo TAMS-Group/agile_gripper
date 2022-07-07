@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- upload the "fake_parallel_gripper" URDF to the param server,
+       then launch a joint_state_publisher_gui to control the diana_gripper 
+       in parallel-gripper mode.
+   -->
+
+  <param name="fake_parallel_gripper_description" 
+         command="$(find xacro)/xacro $(find diana_gripper)/urdf/fake_parallel_gripper.xacro" />
+
+  <!-- publishes robot-state to tf -->
+  <!--
+  <node pkg="robot_state_publisher" type="robot_state_publisher" respawn="false"
+        name="fake_parallel_gripper_state_publisher">
+     <param name="publish_frequency" type="double" value="100.0" />
+     <param name="tf_prefix" type="string" value="" />
+     <remap from"robot_description" to="fake_parallel_gripper_description" />
+     <remap from="joint_states" to="fake_parallel_gripper/joint_states" />
+  </node> 
+  -->
+
+  <node pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" 
+        name="fake_parallel_gripper_joint_state_publisher" respawn="false">
+     <param name="rate" value="30.0" />
+     <remap from="robot_description" to="fake_parallel_gripper_description" />
+     <remap from="joint_states" to="diana_gripper/simple_goal" />
+  </node>
+
+</launch>

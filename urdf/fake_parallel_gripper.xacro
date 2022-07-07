@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="fake_parallel_gripper">
+
+  <!-- small standalone "fake" URDF of a 2-joints robot. This can be used
+       with joint_state_publisher_gui to operate the diana_gripper as a
+       parallel gripper.
+  -->
+
+  <link name="fake_parallel_gripper" >
+      <inertial/>
+      <!-- just a cylinder, in case you want to "visualize" this robot -->
+      <visual>
+        <origin xyz="0 0 0.1" />
+        <material name="fake_parallel_gripper_material">
+          <color rgba="0.7 0.7 0.0 1.0" />
+        </material> 
+        <geometry>
+          <cylinder radius="0.2" length="0.2" />
+        </geometry>
+      </visual>
+  </link>
+
+  <link name="fake_parallel_gripper/angle_link" />
+
+  <joint name="parallel_gripper_angle" type="revolute" >
+    <parent link="fake_parallel_gripper" />
+    <child  link="fake_parallel_gripper/angle_link" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.2" upper="1.2" effort="1" velocity="1" />
+  </joint>
+
+  <link name="fake_parallel_gripper/proximal_tilt_link" />
+
+  <joint name="parallel_gripper_proximal_tilt" type="revolute" >
+    <parent link="fake_parallel_gripper" />
+    <child  link="fake_parallel_gripper/proximal_tilt_link" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.2" upper="1.2" effort="1" velocity="1" />
+  </joint>
+
+  <link name="fake_parallel_gripper/distal_tilt_link" />
+
+  <joint name="parallel_gripper_distal_tilt" type="revolute" >
+    <parent link="fake_parallel_gripper" />
+    <child  link="fake_parallel_gripper/distal_tilt_link" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.2" upper="1.2" effort="1" velocity="1" />
+  </joint>
+
+
+
+  <link name="world" />
+
+  <joint name="world_fake_parallel_gripper_joint" type="fixed" >
+   <parent link="world" />
+   <child  link="fake_parallel_gripper" />
+   <origin xyz="0 0 -1" rpy="0 0 0" />
+  </joint>
+
+</robot>
