@@ -201,11 +201,16 @@ def simple_goal_callback( msg ):
         # convert to joint-angle via IK?
         # 
         angle =  msg.position[0]
+
+        delta = 0.0
         if len(msg.position) > 1:
             delta = msg.position[1]
-        else:
-            delta = 0.0
-        joint_state_goal.position = [angle+delta, -angle,  angle+delta, -angle]
+
+        tilt = 0.0
+        if len(msg.position) > 2:
+            tilt = msg.position[2]
+
+        joint_state_goal.position = [angle+delta, -angle+tilt,  angle+delta, -angle+tilt]
 
         joint_state_goal.header.stamp = msg.header.stamp
         joint_state_goal.velocity = []
