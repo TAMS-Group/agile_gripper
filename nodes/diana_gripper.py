@@ -203,7 +203,7 @@ def simple_goal_callback( msg ):
         angle =  msg.position[0]
         if len(msg.position) > 1:
             delta = msg.position[1]
-        else
+        else:
             delta = 0.0
         joint_state_goal.position = [angle+delta, -angle,  angle+delta, -angle]
 
