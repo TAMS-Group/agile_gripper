@@ -32,11 +32,8 @@ import rospy
 import std_msgs.msg
 import sensor_msgs.msg
 import control_msgs.msg 
-# import diana_gripper.srv
-import scservo.srv
+import diana_gripper.srv
 
-# from sensor_msgs.msg import Imu
-# from control_msgs.msg import JointControllerState
 # from diana_gripper.srv import TextCommand
 
 
@@ -174,7 +171,7 @@ def handle_text_command( request ):
        text_command = request.command
        have_text_command = 1
 
-    res = scservo.srv.TextCommandResponse()
+    res = diana_gripper.srv.TextCommandResponse()
     res.status = "ok."
     print( "####################" )
     return res
@@ -332,7 +329,7 @@ def diana_gripper():
 
     # ROS publishers and subscribers
     # 
-    command_server = rospy.Service( '~command', scservo.srv.TextCommand,
+    command_server = rospy.Service( '~command', diana_gripper.srv.TextCommand,
                                     handle_text_command )
     print( "... created the text-command server ..." )
 
