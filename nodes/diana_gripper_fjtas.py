@@ -79,11 +79,10 @@ class DianaGripperFollowJointTrajectoryAction( object ):
     # embed()
 
     def __init__(self, name):
-        print( '... diana_gripper trajectory action controller (fjtas action).init...' )
+        print( '... diana_gripper follow joint trajectory action controller (fjtas action).init...' )
     
-        print( "###########################################################" )
-        print( "DianaGripperFollowJointTrajectoryFCUCKAÖFKDLJALSKFJSALKFJKSDLFJ" )
-        print( n_joints )
+        # print( "###########################################################" )
+        # print( n_joints )
     
         self.joint_state          = sensor_msgs.msg.JointState()
         self.joint_state.name     = joint_names
@@ -95,7 +94,7 @@ class DianaGripperFollowJointTrajectoryAction( object ):
         self.joint_goal.name     = joint_names
         self.joint_goal.position = np.zeros( n_joints )
         self.joint_goal.velocity = np.zeros( n_joints )
-        print( "###########################################################" )
+        # print( "###########################################################" )
     
         self.n_joint_state_messages = 0
 
@@ -105,21 +104,21 @@ class DianaGripperFollowJointTrajectoryAction( object ):
         self.verbose  = 2
 
         # 
-        self.joint_states_subscriber = rospy.Subscriber( '/diana_gripper/joint_states',
+        self.joint_states_subscriber = rospy.Subscriber( '~joint_states',
                                                          sensor_msgs.msg.JointState, 
                                                          self.joint_states_callback )
         while self.n_joint_state_messages < 5:
-            print( '... waiting for /diana_gripper/joint_states to appear... (received ' 
+            print( '... waiting for ~joint_states to appear... (received ' 
                    + str( self.n_joint_state_messages) + ' messages)' )
             rospy.sleep( rospy.Duration( 5.0 ) )
-        print( '... subscribed to /diana_gripper/joint_states...' )
+        print( '... subscribed to ~joint_states...' )
     
         # create joint_goals publisher and wait for it to become ready...
-        self.joint_goal_publisher = rospy.Publisher( '/diana_gripper/joint_goals', sensor_msgs.msg.JointState, queue_size=1 )
+        self.joint_goal_publisher = rospy.Publisher( '~joint_goals', sensor_msgs.msg.JointState, queue_size=1 )
         while self.joint_goal_publisher.get_num_connections() < 1:
-            print( '... waiting for /diana_gripper/joint_goals publisher to connect...' )
+            print( '... waiting for ~joint_goals subscriber to connect...' )
             rospy.sleep( rospy.Duration( 5.0 ))
-        print( '... publisher connected to /diana_gripper/joint_goals...' )
+        print( '... publisher connected to ~joint_goals...' )
 
         # finally, initalize the action server...
         self.action_name = name
@@ -212,7 +211,7 @@ class DianaGripperFollowJointTrajectoryAction( object ):
 
         self.feedback.desired.positions = copy.deepcopy( four_zeros )
         self.feedback.desired.velocities = copy.deepcopy( four_zeros )
-        self.feedback.desired.accelerations = copy.deep_copy( four_zeros )
+        self.feedback.desired.accelerations = copy.deepcopy( four_zeros )
         self.feedback.desired.time_from_start = rospy.Time.now()
 
         self.feedback.actual.positions = copy.deepcopy( four_zeros )
@@ -275,7 +274,7 @@ class DianaGripperFollowJointTrajectoryAction( object ):
         
 if __name__ == '__main__':
     rospy.init_node('diana_gripper_fjtas', anonymous=False, disable_signals=True ) 
-    fjtas = DianaGripperFollowJointTrajectoryAction( "/diana_gripper_controller/follow_joint_trajectory_action" )
+    fjtas = DianaGripperFollowJointTrajectoryAction( "/diana_gripper_controller/follow_joint_trajectory_action" ) # or remove _action 
 
     #  rospy.spin() # IMPOSSIBLE to control-c this crap under python3, simply continues running 
     while not rospy.is_shutdown():
