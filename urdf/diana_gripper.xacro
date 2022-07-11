@@ -260,6 +260,7 @@
   <xacro:finray_fingertips/> 
   <xacro:finray_ridges_fingertips/> -->
   <xacro:simple_fingertips/> 
+  <xacro:tcp/> 
 
   <xacro:imu_gy521 parent="diana_gripper/left_finger_tip_mount" name="diana_gripper/left_finger_imu" >
     <origin xyz="0 0.023 0" rpy="0 0 3.141" />
@@ -454,6 +455,22 @@
     <parent link="diana_gripper/right_finger_tip_mount" />
     <child  link="diana_gripper/right_finger_finray_ridges" />
     <origin xyz="0 0 0" rpy="1.571 0 0" />
+  </joint>
+</xacro:macro>
+
+
+<xacro:macro name="tcp">
+
+  <link name="diana_gripper/tcp" >
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </visual>
+  </link>
+
+  <joint name="diana_gripper/tcp_joint" type="fixed" >
+    <parent link="diana_gripper" />
+    <child  link="diana_gripper/tcp" />
+    <origin xyz="0 0 0.15" rpy="0 0 0" />
   </joint>
 </xacro:macro>
 
