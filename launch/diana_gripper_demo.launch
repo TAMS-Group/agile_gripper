@@ -26,7 +26,7 @@
 
 
   <!-- the driver node, talking to the gripper using the specifed port and (virtual) baudrate -->
-  <node pkg="diana_gripper" type="diana_gripper.py" name="diana_gripper" output="screen" >
+  <node pkg="diana_gripper" type="diana_gripper_driver.py" name="diana_gripper" output="screen" >
         <param name="rate_hz" value="125" />
         <param name="baud_rate" value="115200" />
         <param name="port_name" value="/dev/ttyACM0" />

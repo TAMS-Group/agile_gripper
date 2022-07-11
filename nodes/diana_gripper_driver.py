@@ -1,6 +1,6 @@
 #! /usr/bin/env python 
 #
-# diana_gripper.py
+# diana_gripper_driver.py
 #
 # Basic Python ROS node to control the 2-fingered "diana_gripper"
 # built from four Feetech SCS series servos.
@@ -32,8 +32,8 @@ import rospy
 import std_msgs.msg
 import sensor_msgs.msg
 import control_msgs.msg 
-import diana_gripper.srv
 
+import diana_gripper.srv
 # from diana_gripper.srv import TextCommand
 
 
@@ -151,9 +151,7 @@ def getv( j, counts ):
 
 def radians_to_counts( j, radians ): # map ROS angle (rad) to SCS servo #j counts
      value = int( joint_offsets[j] + (radians * RAD2DEG)*servo_signs[j]*joint_scale[j] )
-     print( "radians_to_counts: joint " + str(j) + " radians " + str(radians)
-            + " -> " + str( value ))
-
+     # print( "radians_to_counts: joint " + str(j) + " radians " + str(radians) + " -> " + str( value ))
      return value
 
 
@@ -224,7 +222,8 @@ def joint_goal_callback( msg ):
     global have_new_motion_goal
     global joint_state_goal
     # rospy.loginfo( rospy.get_called_id() + " Got new joint goal " + str(msg) )
-    print( "Got new joint goal " + str(msg) )
+    if verbose > 3:
+        print( "... Got new joint goal: " + str(msg) )
 
     try: 
         mutex.acquire()
@@ -234,12 +233,12 @@ def joint_goal_callback( msg ):
         # some ROS nodes use urdf order, some alphabetic, and then some.
         # Fact is, we need to (re-) order the joints here from whatever 
         # the sending node uses to our internal numbering scheme
+        # 
         joint_state_goal.position = [0,0,0,0]
         for i in range( len(msg.name) ):
             joint_name = msg.name[i]
             ji = joint_index[ joint_name ]
             joint_state_goal.position[ji] = msg.position[i]
-            print( ">>>>>>>>>> new joint goal[" + str(ji) + " ] -> " + str(msg.position[i]) )
 
             # skip velocity and effort for now
 
@@ -253,9 +252,48 @@ def joint_goal_callback( msg ):
     return
 
 
+last_seq_number = -1
+last_arduino_millis = -1
+
+def check_seq_and_stamp( seq_number, arduino_millis ):
+    global last_seq_number, last_arduino_millis
+
+    # initialize data on first call(s)
+    #
+    if last_seq_number == -1: 
+        last_seq_number = seq_number
+        return
+
+    if last_arduino_millis == -1:
+        last_arduino_millis = arduino_millis
+        return
+
+    # compare and warn
+    # 
+    if (seq_number - last_seq_number) == 1: # expected case
+        pass
+    elif (seq_number - last_seq_number) == -255: # wrap around
+        pass
+    else:
+        rospy.logerr( "### packet loss: got " + str(seq_number) + " previous " + str(last_seq_number) )
+
+    if (arduino_millis - last_arduino_millis) < 10: # ok
+        pass
+    elif (arduino_millis + 256 - last_arduino_millis) < 10: # wrap around
+        pass
+    else:
+        rospy.logerr( "### packet delay: got " + str(arduino_millis) + " previous " + str(last_arduino_millis) 
+                    + " (msecs.)" )
+ 
+    # update
+    # 
+    last_seq_number = seq_number
+    last_arduino_millis = arduino_millis
+    return
 
 
-def diana_gripper():
+
+def diana_gripper_driver():
     global verbose, js
     global have_text_command, text_command
     global have_new_motion_goal, joint_state_goal
@@ -276,7 +314,9 @@ def diana_gripper():
     # sock.bind((UDP_IP, UDP_PORT))
     # print( "got the UDP socket..." )
 
-    # ROS node stuff
+    # ROS node stuff. To avoid python path trouble, the driver script 
+    # is called diana_gripper_driver.py, but the node and the topics
+    # are called diana_gripper/...
     #
     rospy.init_node( 'diana_gripper', anonymous=False )
 
@@ -410,6 +450,8 @@ def diana_gripper():
                                       str, int ,int ,int, int,
                                       str, int, int, int, int ), data.split()) ]
 
+                check_seq_and_stamp( seq_number, stamp )
+
                 js.header.frame_id = 'diana_gripper'
                 js.header.stamp    = rospy.Time.now()
                 js.name            = joint_names
@@ -423,6 +465,8 @@ def diana_gripper():
                 (str_I, seq_number, stamp, str_amps, u1, u2, u3, u4 ) = \
                 [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
 
+                check_seq_and_stamp( seq_number, stamp )
+
                 curr_joy.header.frame_id = 'diana_gripper/servo_currents'
                 curr_joy.header.stamp    = rospy.Time.now()
                 curr_joy.axes            = []
@@ -435,6 +479,8 @@ def diana_gripper():
             elif (data[0] == 'E'): # servo position errors: 'b'E 102 166 pos 0 0 0 0\n''
                 (str_E, seq_number, stamp, str_pos, err1, err2, err3, err4 ) = \
                   [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
+
+                check_seq_and_stamp( seq_number, stamp )
 
                 # joint_position_errors packet: abuse JointState so that we has pos,vel,pos-error in one message
                 # FIXME: this currently uses/publishes RAW values (scservo counts), but SHOULD publish
@@ -458,6 +504,8 @@ def diana_gripper():
                 (str_F, seq_number, stamp, str_forces, f1, f2, f3, f4 ) = \
                 [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
 
+                check_seq_and_stamp( seq_number, stamp )
+
                 forces_joy.header.frame_id = 'diana_gripper/loadcell_forces_raw'
                 forces_joy.header.stamp    = rospy.Time.now()
                 forces_joy.axes            = []
@@ -470,6 +518,8 @@ def diana_gripper():
             elif (data[0] == 'G'): # IMU: 'b'G 88 173 0 accel -5 -37 8235 gyro 13 -47 -59 \n''
                 (str_I, seq_number, stamp, imu_index, str_accel, ax, ay, az, str_gyro, gx, gy, gz ) = \
                   [t(s) for t,s in zip(( str, int, int, int, str, int, int, int, str, int, int, int), data.split()) ]
+
+                check_seq_and_stamp( seq_number, stamp )
 
                 joy = imu_raw_joy_messages[ imu_index ]
                 joy.header.frame_id = hand_name + '/' + imu_names[ imu_index ] + '/frame'
@@ -503,6 +553,8 @@ def diana_gripper():
                 (str_I, seq_number, stamp, str_amps, u1, u2, u3, u4 ) = \
                 [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
 
+                check_seq_and_stamp( seq_number, stamp )
+
                 curr_joy.header.frame_id = 'diana_gripper/servo_currents'
                 curr_joy.header.stamp    = rospy.Time.now()
                 curr_joy.axes            = []
@@ -515,6 +567,8 @@ def diana_gripper():
             elif (data[0] == 'M'): # servo torques (_m_oments): 'b'M 93 168 trq -1 -1 -1 -1\n''
                 (str_M, seq_number, stamp, str_trq, u1, u2, u3, u4 ) = \
                 [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
+
+                check_seq_and_stamp( seq_number, stamp )
 
                 torques_joy.header.frame_id = 'diana_gripper/servo_torques'
                 torques_joy.header.stamp    = rospy.Time.now()
@@ -534,6 +588,8 @@ def diana_gripper():
                 (str_P, seq_number, stamp, str_pos, p1, p2, p3, p4 ) = \
                   [t(s) for t,s in zip(( str, int, int, str, int, int, int, int ), data.split()) ]
 
+                check_seq_and_stamp( seq_number, stamp )
+
                 js.header.frame_id = 'diana_gripper' # 'diana_gripper'
                 js.header.stamp    = rospy.Time.now()
                 js.name            = joint_names
@@ -545,13 +601,14 @@ def diana_gripper():
                 # js.velocity        = [getv(0,v1), getv(1,v2), getv(2,v3), getv(3,v4)]
                 # 
                 if previous_positions_stamp is not None:
-                    delta_t            = (js.header.stamp - previous_positions_stamp).to_sec()
+                    delta_t            = (js.header.stamp - previous_positions_stamp).to_sec()  # now - previous time
                     delta_millis       = (stamp - js_millis) / 1000.0
                     if (delta_millis < 0): delta_millis = delta_millis + 0.256  # millis() & 0xff
                     if verbose > 4:
                         print( "... delta_t pos: ROS " + str( delta_t ) + "  Arduino " + str( delta_millis ) + " raw diff " + str((stamp - js_millis)/1000.0) );
+
                     if abs(delta_t - delta_millis) > 0.02:
-                        rospy.logerr( "... delta_t pos: ROS " + str( delta_t ) + "  Arduino " + str( delta_millis ));
+                        rospy.logerr( "... delta_t: ROS " + str( delta_t ) + "  Arduino " + str( delta_millis ));
 
                     # js.velocity        = (np.array(current_positions) - np.array(previous_positions)) / delta_tdd
                     js.velocity        = (np.array(current_positions) - np.array(previous_positions)) / delta_millis
@@ -560,12 +617,14 @@ def diana_gripper():
 
                 previous_positions = current_positions
                 previous_positions_stamp = js.header.stamp
-                js_millis = stamp
+                js_millis = stamp # arduino millis
                 joint_state_publisher.publish( js )
 
             elif (data[0] == 'T'): # motor temperatures
                 (str_T, seq_number, stamp, str_t, t1, t2, t3, t4 ) = \
                 [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
+
+                check_seq_and_stamp( seq_number, stamp )
 
                 temp_joy.header.frame_id = 'diana_gripper/servo_temperatures'
                 temp_joy.header.stamp    = rospy.Time.now()
@@ -580,6 +639,8 @@ def diana_gripper():
                 (str_U, seq_number, stamp, str_volts, u1, u2, u3, u4 ) = \
                 [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
 
+                check_seq_and_stamp( seq_number, stamp )
+
                 volt_joy.header.frame_id = 'diana_gripper/servo_voltages'
                 volt_joy.header.stamp    = rospy.Time.now()
                 volt_joy.axes            = []
@@ -590,15 +651,23 @@ def diana_gripper():
                 voltages_publisher.publish( volt_joy )
 
             else: 
-                print( "Unknown data/packet ignored: '" + str(data) + "'" )
+                if data == "'\r\n":
+                    pass
+                elif data.startswith( "..." ):
+                    if verbose > 2: print( data )
+                else:
+                    print( "Unknown data/packet ignored: >" + str(data) + "< len: " + str(len(data)) )
+                    if verbose > 4:
+                        for j in range( len( data )):
+                            print( ord(data[j]) )
 
         except ValueError:
-             print( "Parsing data failed: '" + str(data) + "'" )
-             continue
+            print( "Parsing data failed: '" + str(data) + "'" )
+            continue
 
         except KeyboardInterrupt:
-             running = False
-             pass
+            running = False
+            pass
 
         rate.sleep()
 
@@ -609,7 +678,7 @@ def diana_gripper():
 
 if __name__ == '__main__':
     try:
-        diana_gripper()
+        diana_gripper_driver()
     except KeyboardInterrupt:
         print( "Received control-c, stopping..." )
         exit( 0 )
