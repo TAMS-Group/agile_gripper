@@ -89,7 +89,7 @@
     <child  link="diana_gripper/left_finger_connector" />
     <origin xyz="0 0 0" rpy="0 0 0" />
     <axis xyz="0 1 0" />
-    <limit lower="-1.571" upper="+1.571" effort="1" velocity="0.5" />
+    <limit lower="-1.571" upper="+1.571" effort="1" velocity="6.28" />
     <dynamics damping="0.7" friction="0.0" />
     <safety_controller soft_lower_limit="-1.57" soft_upper_limit="1.57" k_position="1000" k_velocity="100"/> 
   </joint>
@@ -152,7 +152,7 @@
     <child  link="diana_gripper/left_finger_distal_bracket" />
     <origin xyz="0 0 0" rpy="0 0 0" />
     <axis xyz="0 1 0" />
-    <limit lower="-2.21" upper="+2.21" effort="1" velocity="0.5" />
+    <limit lower="-2.21" upper="+2.21" effort="1" velocity="6.28" />
     <dynamics damping="0.7" friction="0.0" />
     <safety_controller soft_lower_limit="-2.20" soft_upper_limit="2.20" k_position="1000" k_velocity="100"/>
   </joint>
@@ -191,7 +191,7 @@
     <child  link="diana_gripper/right_finger_connector" />
     <origin xyz="0 0 0" rpy="0 0 0" />
     <axis xyz="0 -1 0" />
-    <limit lower="-1.571" upper="+1.571" effort="1" velocity="0.5" />
+    <limit lower="-1.571" upper="+1.571" effort="1" velocity="6.28" />
     <dynamics damping="0.7" friction="0.0" />
     <safety_controller soft_lower_limit="-1.57" soft_upper_limit="1.57" k_position="1000" k_velocity="100"/> 
   </joint>
@@ -255,7 +255,7 @@
     <child  link="diana_gripper/right_finger_distal_bracket" />
     <origin xyz="0 0 0" rpy="0 0 0" />
     <axis xyz="0 -1 0" />
-    <limit lower="-2.21" upper="+2.21" effort="1" velocity="0.5" />
+    <limit lower="-2.21" upper="+2.21" effort="1" velocity="6.28" />
     <dynamics damping="0.7" friction="0.0" />
     <safety_controller soft_lower_limit="-2.20" soft_upper_limit="2.20" k_position="1000" k_velocity="100"/>
   </joint>
