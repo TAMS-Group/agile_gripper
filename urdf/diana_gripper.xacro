@@ -39,7 +39,7 @@
       <collision>
         <origin xyz="0 0 ${(0.02+0.0127)/2}" rpy="0 0 0" />
         <geometry>
-          <box size="${0.075*2} 0.085 ${0.02+0.0127}" />
+          <box size="${0.075*2} 0.105 ${0.02+0.0127}" />
         </geometry>
       </collision>
   </link>
@@ -115,6 +115,12 @@
         <mesh filename="package://diana_gripper/meshes/diana_gripper_connector_v1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
+    <collision>
+      <origin xyz="0 0.001 0" rpy="0 -1.571 0" />
+      <geometry>
+        <mesh filename="package://diana_gripper/meshes/diana_gripper_connector_v1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
   </link>
 
   <joint name="diana_gripper/left_finger_distal_servo_mount_joint" type="fixed" >
@@ -133,6 +139,12 @@
         <mesh filename="package://diana_gripper/meshes/feetech_bracket_big.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
+    <collision>
+      <origin xyz="0 0 -0.0275" rpy="0 0 1.571" />
+      <geometry>
+        <mesh filename="package://diana_gripper/meshes/feetech_bracket_big.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
   </link>
 
   <joint name="diana_gripper/LFJ1" type="revolute" >
@@ -205,6 +217,12 @@
         <mesh filename="package://diana_gripper/meshes/diana_gripper_connector_v1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
+    <collision>
+      <origin xyz="0 0.001 0" rpy="0 -1.571 0" />
+      <geometry>
+        <mesh filename="package://diana_gripper/meshes/diana_gripper_connector_v1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
   </link>
 
   <joint name="diana_gripper/right_finger_distal_servo_mount_joint" type="fixed" >
@@ -223,6 +241,13 @@
         <mesh filename="package://diana_gripper/meshes/feetech_bracket_big.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
+
+    <collision>
+      <origin xyz="0 0 -0.0275" rpy="0 0 1.571" />
+      <geometry>
+        <mesh filename="package://diana_gripper/meshes/feetech_bracket_big.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
   </link>
 
   <joint name="diana_gripper/RFJ1" type="revolute" >
@@ -310,6 +335,12 @@
         <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 1.571" />
+      <geometry>
+        <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
   </link>
 
   <joint name="diana_gripper/left_finger_digit_sensor_joint" type="fixed" >
@@ -328,6 +359,12 @@
         <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 1.571" />
+      <geometry>
+        <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
   </link>
 
   <joint name="diana_gripper/right_finger_digit_sensor_joint" type="fixed" >
@@ -351,6 +388,12 @@
         <mesh filename="package://diana_gripper/meshes/fingertip_simple.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://diana_gripper/meshes/fingertip_simple_hull.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
   </link>
 
   <joint name="diana_gripper/left_fingertip_simple_joint" type="fixed" >
@@ -369,6 +412,12 @@
         <mesh filename="package://diana_gripper/meshes/fingertip_simple.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://diana_gripper/meshes/fingertip_simple_hull.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
   </link>
 
   <joint name="diana_gripper/right_fingertip_simple_joint" type="fixed" >
