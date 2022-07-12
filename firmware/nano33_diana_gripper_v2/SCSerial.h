@@ -1,7 +1,3 @@
-﻿/*
- * SCSerial.h
- */
-
 #ifndef _SCSERIAL_H
 #define _SCSERIAL_H
 
@@ -21,14 +17,14 @@ public:
 	SCSerial(u8 End, u8 Level);
 
 protected:
-	virtual int writeSCS(unsigned char *nDat, int nLen);//输出nLen字节
-	virtual int readSCS(unsigned char *nDat, int nLen);//输入nLen字节
-	virtual int writeSCS(unsigned char bDat);//输出1字节
-	virtual void rFlushSCS();//
-	virtual void wFlushSCS();//
+	virtual int writeSCS(unsigned char *nDat, int nLen);
+	virtual int readSCS(unsigned char *nDat, int nLen);
+	virtual int writeSCS(unsigned char bDat);
+	virtual void rFlushSCS();
+	virtual void wFlushSCS();
 public:
-	unsigned long int IOTimeOut;//输入输出超时
-	HardwareSerial *pSerial;//串口指针
+	unsigned long int IOTimeOut;
+	HardwareSerial *pSerial;
 	int Err;
 public:
 	virtual int getErr(){  return Err;  }
