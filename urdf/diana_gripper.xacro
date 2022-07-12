@@ -511,9 +511,6 @@
 <xacro:macro name="tcp">
 
   <link name="diana_gripper/tcp" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-    </visual>
   </link>
 
   <joint name="diana_gripper/tcp_joint" type="fixed" >
