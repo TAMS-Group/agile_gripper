@@ -276,7 +276,7 @@ class DianaGripperFollowJointTrajectoryAction( object ):
         
 if __name__ == '__main__':
     rospy.init_node('diana_gripper_fjtas', anonymous=False, disable_signals=True ) 
-    fjtas = DianaGripperFollowJointTrajectoryAction( "/diana_gripper_controller/follow_joint_trajectory_action" ) # or remove _action 
+    fjtas = DianaGripperFollowJointTrajectoryAction( "/diana_gripper_controller/follow_joint_trajectory" ) # or remove _action 
 
     #  rospy.spin() # IMPOSSIBLE to control-c this crap under python3, simply continues running 
     while not rospy.is_shutdown():
