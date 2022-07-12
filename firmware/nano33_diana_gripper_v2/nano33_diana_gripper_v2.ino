@@ -113,7 +113,7 @@ int     palm_imu_gx, palm_imu_gy, palm_imu_gz;
 
 // two InvenSense 6050 6-axis IMUs at I2C addresses 0x68 and 0x69. 
 // 
-#include <I2Cdev.h>
+//#include <I2Cdev.h>
 #include <MPU6050.h>
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
     #include "Wire.h"
