@@ -1,10 +1,3 @@
-﻿/*
- * SCSCL.cpp
- * 飞特SCSCL系列串行舵机应用层程序
- * 日期: 2019.6.28
- * 作者: 
- */
-
 #include "SCSCL.h"
 
 SCSCL::SCSCL()

@@ -704,7 +704,7 @@ def diana_gripper_driver():
                     if verbose > 4:
                         print( "... delta_t pos: ROS " + str( delta_t ) + "  Arduino " + str( delta_millis ) + " raw diff " + str((stamp - js_millis)/1000.0) );
 
-                    if abs(delta_t - delta_millis) > 0.02:
+                    if verbose > 2 and abs(delta_t - delta_millis) > 0.02:
                         rospy.logerr( "... delta_t: ROS " + str( delta_t ) + "  Arduino " + str( delta_millis ));
 
                     # js.velocity        = (np.array(current_positions) - np.array(previous_positions)) / delta_tdd

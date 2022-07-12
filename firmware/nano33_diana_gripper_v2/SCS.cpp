@@ -1,10 +1,3 @@
-﻿/*
- * SCS.cpp
- * 飞特串行舵机通信层协议程序
- * 日期: 2019.12.18
- * 作者: 
- */
-
 #include <stddef.h>
 #include "SCS.h"
 

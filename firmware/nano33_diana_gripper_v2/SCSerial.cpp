@@ -1,11 +1,3 @@
-/*
- * SCSerial.h
- * 飞特串行舵机硬件接口层程序
- * 日期: 2019.4.27
- * 作者: 
- */
-
-
 #include "SCSerial.h"
 
 SCSerial::SCSerial()

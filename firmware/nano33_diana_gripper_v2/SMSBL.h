@@ -1,10 +1,3 @@
-﻿/*
- * SMSBL.h
- * SMSBL
- * 2019.6.28
- * fnh: removed chinese characters as Arduino complains about them...
- */
-
 #ifndef _SMSBL_H
 #define _SMSBL_H
 

@@ -144,6 +144,8 @@ class DianaGripperFollowJointTrajectoryAction( object ):
             # the sending node uses to our internal numbering scheme
             for i in range( len(msg.name) ):
                 joint_name = msg.name[i]
+                if joint_name not in joint_index_map:
+                    continue
                 ji = joint_index_map[ joint_name ]
                 self.joint_state.position[ji] = msg.position[i]
 
@@ -274,7 +276,7 @@ class DianaGripperFollowJointTrajectoryAction( object ):
         
 if __name__ == '__main__':
     rospy.init_node('diana_gripper_fjtas', anonymous=False, disable_signals=True ) 
-    fjtas = DianaGripperFollowJointTrajectoryAction( "/diana_gripper_controller/follow_joint_trajectory_action" ) # or remove _action 
+    fjtas = DianaGripperFollowJointTrajectoryAction( "/diana_gripper_controller/follow_joint_trajectory" ) # or remove _action 
 
     #  rospy.spin() # IMPOSSIBLE to control-c this crap under python3, simply continues running 
     while not rospy.is_shutdown():
