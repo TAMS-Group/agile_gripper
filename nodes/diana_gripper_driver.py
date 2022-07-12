@@ -27,6 +27,7 @@ import serial
 import math
 import numpy as np
 import threading
+import traceback
 
 import rospy
 import std_msgs.msg
@@ -86,6 +87,17 @@ previous_torques_stamp = None
 previous_torques = np.zeros( n_joints )
 previous_positions = np.zeros( n_joints )
 
+# loadcell stuff
+#
+n_load_cells = 4
+grams_to_newtons = 0.00981
+load_cell_bias = np.zeros( n_load_cells )
+load_cell_gains = np.ones( n_load_cells )
+forces_averaged = []
+for i in range( n_load_cells ):
+    forces_averaged[i] = collections.deque( maxlen=100 )
+
+
 
 
 # IMU names and messages
@@ -97,6 +109,7 @@ imu_gyro_scale = []
 imu_messages = []
 imu_raw_joy_messages = []
 imu_calibration = []
+imu_averaged = {}
 
 for i in range( len(imu_names) ):
     imu_raw_joy_messages.append( sensor_msgs.msg.Joy() )
@@ -104,6 +117,12 @@ for i in range( len(imu_names) ):
     imu_calibration.append( {} )
     imu_accel_scale.append( 1.0 )
     imu_gyro_scale.append( 1.0 )
+
+    # running averages stuff (note: raw data)
+    imu_averaged[ imu_names ] = {}
+    for k in ['ax', 'ay', 'az', 'gx', 'gy', 'gz']:
+        imu_averaged[ imu_names[i] ][ k ] = collections.deque( maxlen=100 )
+
 # print( '>>>>>>> len(imu) ' + str( len( imu_calibration )))
 
 
@@ -155,6 +174,62 @@ def radians_to_counts( j, radians ): # map ROS angle (rad) to SCS servo #j count
      return value
 
 
+#
+# perform a tara (=reset-bias) operation for the requested sensors,
+# where loadcells = 0 1 2 3 ... and IMU channels are selected by ax..gz.
+# For example "tara 023 palm_imu ax gy gz" will perform tara on the
+# loadcells 0, 2, and 3, and the accelerometer ax and gyroscope gy gz
+# channels of the "palm_imu".
+#
+def tara( msg ):
+    global load_cell_bias, load_cell_gains 
+
+    cmd = msg
+    if msg.startswith( 'tara'): 
+        cmd = msg.substring( 4 )
+ 
+    print( "... tara command: >" + str(cmd) + "< ..." )
+
+    mutex.acquire()
+
+    # load-cell tara selected by channel IDs '0'..'n':
+    #
+    for i in range( len( load_cell_gains) ):
+        if cmd.find( str(i) ) >= 0:
+            load_cell_bias[i] = -load_cell_gains[i]*forces_averaged[i] 
+            print( "... load-cell[" + str(i) + "] new bias:" + str( load_cell_bias[i] ))
+    print( "... load-cell tara ok." )
+
+    # gyro tara selected by 'g' (all IMUs), calculate running average from current data
+    #
+    for i in range( len( imu_names )):
+        imu_name = imu_names[i]
+        for k in ['gx', 'gy', 'gz']:
+            if cmd.find( k ) < 0: 
+                continue    # skip gx gy gz if not selected in command
+
+            n_samples = len( imu_averaged[imu_name][k] )
+            if n_samples <= 0:
+                continue    # also skip if not enough values
+
+            ss = sum( imu_averaged[imu_name][k] ) / n_samples
+            bb = -ss / n_samples
+            gyro_bias[imu_name][key] = bb
+            rospy.logerr( "... " + imu_name + ": new gyro bias " + k + ": " + str( bb ))
+
+    print( "... gyro tara ok." )
+
+    # accel tara selected by 'a' (all IMUs)
+    #
+    if cmd.find( "a" ) >= 0:
+        print( "... accel tara requested, but not implemented yet!" )
+
+    mutex.release()
+    print( "... tara ok." )
+    return
+
+
+
 def handle_text_command( request ):
     global text_command
     global have_text_command
@@ -164,6 +239,11 @@ def handle_text_command( request ):
     if (have_text_command != 0):
        print( "handle_text_command: Busy; command ignored!" )
        return False
+
+    # special handling for some commands...
+    # 
+    if (request.command.startswith( "tara" )):
+       tara()
 
     else:
        text_command = request.command
@@ -189,7 +269,8 @@ def simple_goal_callback( msg ):
         # for the "simple" joint goal, we take the first joint position
         # and apply it to all four joints (with signs adjusted as necessary).
         # If position[1] is also given, that is used as the "delta" angle
-        # for the distal phalanges (fingertips tilt inwards or outwards).
+        # for the distal phalanges (fingertips tilt inwards or outwards),
+        # and position[2] is similarly used for proximal delta.
         # The rest of the message, including velocities and efforts, is ignored.
         #
         # Maybe it would be nice to take an "opening" width in meters and
@@ -250,6 +331,16 @@ def joint_goal_callback( msg ):
     finally:
         mutex.release()
     return
+
+
+def get_calibrated_forces( counts ): # raw loadcell readings
+    global load_cell_bias, load_cell_gains, grams_to_newtons
+
+    N = len( load_cell_gains )
+    forces = np.zeros( N )
+    for i in range( N ):
+        forces[i] = grams_to_newtons*(load_cell_bias[i] + counts[i]*load_cell_gains[i]
+    return forces
 
 
 last_seq_number = -1
@@ -369,8 +460,7 @@ def diana_gripper_driver():
 
     # ROS publishers and subscribers
     # 
-    command_server = rospy.Service( '~command', diana_gripper.srv.TextCommand,
-                                    handle_text_command )
+    command_server = rospy.Service( '~command', diana_gripper.srv.TextCommand, handle_text_command )
     print( "... created the text-command server ..." )
 
     iteration = 0
@@ -438,7 +528,13 @@ def diana_gripper_driver():
                 finally:
                     mutex.release()
 
-            data = ser.readline().decode( "utf-8" ) ## stupid python3 
+            data = ""
+            rawdata = ser.readline()
+            try: 
+                data = rawdata.decode( "utf-8" ) ## stupid python3 
+            except Exception:
+                print(traceback.format_exc())
+
             if (verbose > 2) or ((iteration / 1000) == 999):
                 print( "received message: ", data);
 
@@ -500,19 +596,20 @@ def diana_gripper_driver():
 
                 joint_error_publisher.publish( js_errors )
 
-            elif (data[0] == 'F'): # loadcell forces
+            elif (data[0] == 'F'): # load-cell forces
                 (str_F, seq_number, stamp, str_forces, f1, f2, f3, f4 ) = \
-                [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
+                  [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
 
                 check_seq_and_stamp( seq_number, stamp )
 
+                # save raw values for use in tara() operation
+                load_cell_counts = [f1, f2, f3, f4]
+                for i in range( n_load_cells ):
+                    forces_averaged[i].append( load_cell_counts[i] )
+
                 forces_joy.header.frame_id = 'diana_gripper/loadcell_forces_raw'
                 forces_joy.header.stamp    = rospy.Time.now()
-                forces_joy.axes            = []
-                forces_joy.axes.append( f1 )
-                forces_joy.axes.append( f2 )
-                forces_joy.axes.append( f3 )
-                forces_joy.axes.append( f4 )
+                forces_joy.axes            = get_calibrated_forces( load_cell_counts )
                 forces_raw_publisher.publish( forces_joy )
 
             elif (data[0] == 'G'): # IMU: 'b'G 88 173 0 accel -5 -37 8235 gyro 13 -47 -59 \n''
@@ -566,7 +663,7 @@ def diana_gripper_driver():
 
             elif (data[0] == 'M'): # servo torques (_m_oments): 'b'M 93 168 trq -1 -1 -1 -1\n''
                 (str_M, seq_number, stamp, str_trq, u1, u2, u3, u4 ) = \
-                [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
+                  [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
 
                 check_seq_and_stamp( seq_number, stamp )
 
@@ -622,7 +719,7 @@ def diana_gripper_driver():
 
             elif (data[0] == 'T'): # motor temperatures
                 (str_T, seq_number, stamp, str_t, t1, t2, t3, t4 ) = \
-                [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
+                  [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
 
                 check_seq_and_stamp( seq_number, stamp )
 
@@ -637,7 +734,7 @@ def diana_gripper_driver():
 
             elif (data[0] == 'U'): # servo voltages
                 (str_U, seq_number, stamp, str_volts, u1, u2, u3, u4 ) = \
-                [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
+                  [t(s) for t,s in zip(( str, int, int, str, int, int, int, int), data.split()) ]
 
                 check_seq_and_stamp( seq_number, stamp )
 
