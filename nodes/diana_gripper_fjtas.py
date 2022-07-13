@@ -88,7 +88,8 @@ class DianaGripperFollowJointTrajectoryAction( object ):
         self.joint_state.name     = joint_names
         self.joint_state.position = np.zeros( n_joints )
         self.joint_state.velocity = np.zeros( n_joints )
-        print( self.joint_state.position )
+
+        # print( self.joint_state.position )
     
         self.joint_goal          = sensor_msgs.msg.JointState()
         self.joint_goal.name     = joint_names
@@ -103,7 +104,6 @@ class DianaGripperFollowJointTrajectoryAction( object ):
         self.result   = control_msgs.msg.FollowJointTrajectoryResult()
         self.verbose  = 2
 
-        # 
         self.joint_states_subscriber = rospy.Subscriber( '~joint_states',
                                                          sensor_msgs.msg.JointState, 
                                                          self.joint_states_callback )
@@ -111,14 +111,14 @@ class DianaGripperFollowJointTrajectoryAction( object ):
             rospy.logwarn_throttle( 5.0, '... waiting for ~joint_states to appear... (received ' 
                    + str( self.n_joint_state_messages) + ' messages)' )
             rospy.sleep( rospy.Duration( 0.2 ) )
-        print( '... subscribed to ~joint_states...' )
+        print( '... subscribed to ~joint_states now...' )
     
         # create joint_goals publisher and wait for it to become ready...
         self.joint_goal_publisher = rospy.Publisher( '~joint_goals', sensor_msgs.msg.JointState, queue_size=1 )
         while self.joint_goal_publisher.get_num_connections() < 1:
             rospy.logwarn_throttle( 5.0, '... waiting for ~joint_goals subscriber to connect...' )
             rospy.sleep( rospy.Duration( 0.2 ))
-        print( '... publisher connected to ~joint_goals...' )
+        print( '... publisher connected to ~joint_goals now...' )
 
         # finally, initalize the action server...
         self.action_name = name
@@ -332,9 +332,15 @@ class DianaGripperFollowJointTrajectoryAction( object ):
                 self.feedback.error.time_from_start = rospy.Time.now()
 
                 self.action_server.publish_feedback( self.feedback )
-                print( '... published feedback: \n' + str( self.feedback ) + '\n\n' )
+                if self.verbose > 3:
+                    print( '... published feedback: \n' + str( self.feedback ) + '\n\n' )
 
-            #
+        # end of the t_now < t_end loop. Send the last trajectory point (again)
+        # to make sure that we arrive at the target...
+        #
+        print( '... loop complete, moving to last trajectory point (again)...' )
+        GG,VV = self.interpolate_point( goal.trajectory.points[-1], goal.trajectory.points[-1], 1.0 )
+        self.move_to_interpolated_point( goal, GG, VV ) 
 
         print( '... trajectory FINISHED.' )
         if success: 
