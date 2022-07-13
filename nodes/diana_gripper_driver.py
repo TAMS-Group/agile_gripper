@@ -95,7 +95,7 @@ load_cell_bias = np.zeros( n_load_cells )
 load_cell_gains = np.ones( n_load_cells )
 forces_averaged = {}
 for i in range( n_load_cells ):
-    forces_averaged[i] = collections.deque( maxlen=100 )
+    forces_averaged.append(collections.deque( maxlen=100 ))
 
 
 
