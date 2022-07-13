@@ -16,7 +16,7 @@
   <!-- prototype two-finger diana_gripper with four SC servos.
        Origin is at the bottom center of the base plate.
    -->
-  <link name="diana_gripper">
+  <link name="${name}">
       <inertial>
         <!-- note that estimated mass does not include servos, these are separate -->
         <origin xyz="0 0 ${0.010}" />
@@ -27,7 +27,7 @@
       <!-- combined visuals: base plate, four load cells, two servo carriers, palm plate -->
       <visual>
         <origin xyz="0 0 0" />
-        <material name="diana_gripper_base_v1_material" >
+        <material name="${name}_base_v1_material" >
           <color rgba="0.4 0.4 0.4 1.0" />
         </material> 
         <geometry>
@@ -44,7 +44,7 @@
       </collision>
   </link>
 
-  <gazebo reference="diana_gripper">
+  <gazebo reference="${name}">
       <material>Gazebo/Black</material>
       <turnGravityOff>false</turnGravityOff>
       <selfCollide>true</selfCollide>
@@ -57,36 +57,36 @@
 
   <!-- four servos -->
 
-  <xacro:scservo name="diana_gripper/left_finger_proximal_servo" 
+  <xacro:scservo name="${name}/left_finger_proximal_servo" 
                  type="scs20"  
                  rgba="0.0 0.0 0.6 1.0" gmaterial="Gazebo/Blue">
   </xacro:scservo>
 
-  <xacro:scservo name="diana_gripper/left_finger_distal_servo" 
+  <xacro:scservo name="${name}/left_finger_distal_servo" 
                  type="scs20"  
                  rgba="0.0 0.0 0.6 1.0" gmaterial="Gazebo/Blue">
   </xacro:scservo>
 
-  <xacro:scservo name="diana_gripper/right_finger_proximal_servo" 
+  <xacro:scservo name="${name}/right_finger_proximal_servo" 
                  type="scs20"  
                  rgba="0.0 0.0 0.6 1.0" gmaterial="Gazebo/Blue">
   </xacro:scservo>
 
-  <xacro:scservo name="diana_gripper/right_finger_distal_servo" 
+  <xacro:scservo name="${name}/right_finger_distal_servo" 
                  type="scs20"  
                  rgba="0.0 0.0 0.6 1.0" gmaterial="Gazebo/Blue">
   </xacro:scservo>
 
 
-  <joint name="diana_gripper/left_finger_proximal_servo_mount_joint" type="fixed" >
-    <parent link="diana_gripper" />
-    <child  link="diana_gripper/left_finger_proximal_servo" />
+  <joint name="${name}/left_finger_proximal_servo_mount_joint" type="fixed" >
+    <parent link="${name}" />
+    <child  link="${name}/left_finger_proximal_servo" />
     <origin xyz="${-0.075+0.01} 0 ${0.015+0.005+0.03}" rpy="0 3.1415 0" />
   </joint>
 
-  <joint name="diana_gripper/LFJ2" type="revolute" >
-    <parent link="diana_gripper/left_finger_proximal_servo" />
-    <child  link="diana_gripper/left_finger_connector" />
+  <joint name="${name}/LFJ2" type="revolute" >
+    <parent link="${name}/left_finger_proximal_servo" />
+    <child  link="${name}/left_finger_connector" />
     <origin xyz="0 0 0" rpy="0 0 0" />
     <axis xyz="0 1 0" />
     <limit lower="-1.571" upper="+1.571" effort="1" velocity="6.28" />
@@ -94,21 +94,21 @@
     <safety_controller soft_lower_limit="-1.57" soft_upper_limit="1.57" k_position="1000" k_velocity="100"/> 
   </joint>
 
-  <transmission name="diana_gripper/LFJ2_joint_transmission">
+  <transmission name="${name}/LFJ2_joint_transmission">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="diana_gripper/LFJ2" >
+    <joint name="${name}/LFJ2" >
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
-    <actuator name="diana_gripper/left_finger_proximal_joint_motor" >
+    <actuator name="${name}/left_finger_proximal_joint_motor" >
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>100</mechanicalReduction>
     </actuator>
   </transmission>
 
-  <link name="diana_gripper/left_finger_connector" >
+  <link name="${name}/left_finger_connector" >
     <visual>
       <origin xyz="0 0.001 0" rpy="0 -1.571 0" />
-      <material name="diana_gripper_left_finger_connector_material" >
+      <material name="${name}_left_finger_connector_material" >
         <color rgba="1.0 0.0 0.0 1.0" />
       </material> 
       <geometry>
@@ -123,16 +123,16 @@
     </collision>
   </link>
 
-  <joint name="diana_gripper/left_finger_distal_servo_mount_joint" type="fixed" >
-    <parent link="diana_gripper/left_finger_connector" />
-    <child  link="diana_gripper/left_finger_distal_servo" />
+  <joint name="${name}/left_finger_distal_servo_mount_joint" type="fixed" >
+    <parent link="${name}/left_finger_connector" />
+    <child  link="${name}/left_finger_distal_servo" />
     <origin xyz="0 0 ${-0.03-0.017}" rpy="0 0 0" />
   </joint>
 
-  <link name="diana_gripper/left_finger_distal_bracket" >
+  <link name="${name}/left_finger_distal_bracket" >
     <visual>
       <origin xyz="0 0 -0.0275" rpy="0 0 1.571" />
-      <material name="diana_gripper_left_finger_distal_bracket_material" >
+      <material name="${name}_left_finger_distal_bracket_material" >
         <color rgba="0.9 0.9 0.9 1.0" />
       </material> 
       <geometry>
@@ -147,9 +147,9 @@
     </collision>
   </link>
 
-  <joint name="diana_gripper/LFJ1" type="revolute" >
-    <parent link="diana_gripper/left_finger_distal_servo" />
-    <child  link="diana_gripper/left_finger_distal_bracket" />
+  <joint name="${name}/LFJ1" type="revolute" >
+    <parent link="${name}/left_finger_distal_servo" />
+    <child  link="${name}/left_finger_distal_bracket" />
     <origin xyz="0 0 0" rpy="0 0 0" />
     <axis xyz="0 1 0" />
     <limit lower="-2.21" upper="+2.21" effort="1" velocity="6.28" />
@@ -157,38 +157,38 @@
     <safety_controller soft_lower_limit="-2.20" soft_upper_limit="2.20" k_position="1000" k_velocity="100"/>
   </joint>
 
-  <transmission name="diana_gripper/LFJ1_joint_transmission">
+  <transmission name="${name}/LFJ1_joint_transmission">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="diana_gripper/LFJ1" >
+    <joint name="${name}/LFJ1" >
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
-    <actuator name="diana_gripper/left_finger_distal_joint_motor" >
+    <actuator name="${name}/left_finger_distal_joint_motor" >
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>100</mechanicalReduction>
     </actuator>
   </transmission>
   
-  <link name="diana_gripper/left_finger_tip_mount" />
+  <link name="${name}/left_finger_tip_mount" />
 
 
   <!-- convert from weird SCS20 coordinates back to base frame (when finger straight) -->
-  <joint name="diana_gripper/left_finger_tip_mount_joint" type="fixed">
-    <parent link="diana_gripper/left_finger_distal_bracket" />
-    <child  link="diana_gripper/left_finger_tip_mount" />
+  <joint name="${name}/left_finger_tip_mount_joint" type="fixed">
+    <parent link="${name}/left_finger_distal_bracket" />
+    <child  link="${name}/left_finger_tip_mount" />
     <origin xyz="0 0 ${-0.0275}" rpy="0 3.1415 0" />
   </joint>
 
   <!-- right finger with joints -->
 
-  <joint name="diana_gripper/right_finger_proximal_servo_mount_joint" type="fixed" >
-    <parent link="diana_gripper" />
-    <child  link="diana_gripper/right_finger_proximal_servo" />
+  <joint name="${name}/right_finger_proximal_servo_mount_joint" type="fixed" >
+    <parent link="${name}" />
+    <child  link="${name}/right_finger_proximal_servo" />
     <origin xyz="${+0.075-0.01} 0 ${0.015+0.005+0.03}" rpy="0 3.1415 0" />
   </joint>
 
-  <joint name="diana_gripper/RFJ2" type="revolute" >
-    <parent link="diana_gripper/right_finger_proximal_servo" />
-    <child  link="diana_gripper/right_finger_connector" />
+  <joint name="${name}/RFJ2" type="revolute" >
+    <parent link="${name}/right_finger_proximal_servo" />
+    <child  link="${name}/right_finger_connector" />
     <origin xyz="0 0 0" rpy="0 0 0" />
     <axis xyz="0 -1 0" />
     <limit lower="-1.571" upper="+1.571" effort="1" velocity="6.28" />
@@ -196,21 +196,21 @@
     <safety_controller soft_lower_limit="-1.57" soft_upper_limit="1.57" k_position="1000" k_velocity="100"/> 
   </joint>
 
-  <transmission name="diana_gripper/RFJ2_joint_transmission">
+  <transmission name="${name}/RFJ2_joint_transmission">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="diana_gripper/RFJ2" >
+    <joint name="${name}/RFJ2" >
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
-    <actuator name="diana_gripper/RFJ2_joint_motor" >
+    <actuator name="${name}/RFJ2_joint_motor" >
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>100</mechanicalReduction>
     </actuator>
   </transmission>
 
-  <link name="diana_gripper/right_finger_connector" >
+  <link name="${name}/right_finger_connector" >
     <visual>
       <origin xyz="0 0.001 0" rpy="0 -1.571 0" />
-      <material name="diana_gripper_right_finger_connector_material" >
+      <material name="${name}_right_finger_connector_material" >
         <color rgba="0.0 1.0 0.0 1.0" />
       </material> 
       <geometry>
@@ -225,16 +225,16 @@
     </collision>
   </link>
 
-  <joint name="diana_gripper/right_finger_distal_servo_mount_joint" type="fixed" >
-    <parent link="diana_gripper/right_finger_connector" />
-    <child  link="diana_gripper/right_finger_distal_servo" />
+  <joint name="${name}/right_finger_distal_servo_mount_joint" type="fixed" >
+    <parent link="${name}/right_finger_connector" />
+    <child  link="${name}/right_finger_distal_servo" />
     <origin xyz="0 0 ${-0.03-0.017}" rpy="0 0 0" />
   </joint>
 
-  <link name="diana_gripper/right_finger_distal_bracket" >
+  <link name="${name}/right_finger_distal_bracket" >
     <visual>
       <origin xyz="0 0 -0.0275" rpy="0 0 1.571" />
-      <material name="diana_gripper_right_finger_distal_bracket_material" >
+      <material name="${name}_right_finger_distal_bracket_material" >
         <color rgba="0.9 0.9 0.9 1.0" />
       </material> 
       <geometry>
@@ -250,9 +250,9 @@
     </collision>
   </link>
 
-  <joint name="diana_gripper/RFJ1" type="revolute" >
-    <parent link="diana_gripper/right_finger_distal_servo" />
-    <child  link="diana_gripper/right_finger_distal_bracket" />
+  <joint name="${name}/RFJ1" type="revolute" >
+    <parent link="${name}/right_finger_distal_servo" />
+    <child  link="${name}/right_finger_distal_bracket" />
     <origin xyz="0 0 0" rpy="0 0 0" />
     <axis xyz="0 -1 0" />
     <limit lower="-2.21" upper="+2.21" effort="1" velocity="6.28" />
@@ -260,44 +260,41 @@
     <safety_controller soft_lower_limit="-2.20" soft_upper_limit="2.20" k_position="1000" k_velocity="100"/>
   </joint>
 
-  <transmission name="diana_gripper/RFJ1_joint_transmission">
+  <transmission name="${name}/RFJ1_joint_transmission">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="diana_gripper/RFJ1" >
+    <joint name="${name}/RFJ1" >
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
-    <actuator name="diana_gripper/RFJ1_joint_motor" >
+    <actuator name="${name}/RFJ1_joint_motor" >
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>100</mechanicalReduction>
     </actuator>
   </transmission>
 
-  <link name="diana_gripper/right_finger_tip_mount" />
+  <link name="${name}/right_finger_tip_mount" />
 
   <!-- convert from weird SCS20 coordinates back to base frame (when finger straight) -->
-  <joint name="diana_gripper/right_finger_tip_mount_joint" type="fixed">
-    <parent link="diana_gripper/right_finger_distal_bracket" />
-    <child  link="diana_gripper/right_finger_tip_mount" />
+  <joint name="${name}/right_finger_tip_mount_joint" type="fixed">
+    <parent link="${name}/right_finger_distal_bracket" />
+    <child  link="${name}/right_finger_tip_mount" />
     <origin xyz="0 0 ${-0.0275}" rpy="0 3.1415 0" />   <!-- or ${-0.0275-0.02} -->
   </joint>
 
   <!-- <xacro:dummy_fingertips/>
   <xacro:digit_fingertips/>
   <xacro:finray_fingertips/> 
-  <xacro:finray_ridges_fingertips/> -->
-  <xacro:simple_fingertips/> 
+  <xacro:finray_ridges_fingertips/>
+  <xacro:simple_fingertips/>  -->
   <xacro:tcp/> 
 
-  <xacro:imu_gy521 parent="diana_gripper/left_finger_tip_mount" name="diana_gripper/left_finger_imu" >
+  <xacro:imu_gy521 parent="${name}/left_finger_tip_mount" name="${name}/left_finger_imu" >
     <origin xyz="0 0.023 0" rpy="0 0 3.141" />
   </xacro:imu_gy521>
-  <xacro:imu_gy521 parent="diana_gripper/right_finger_tip_mount" name="diana_gripper/right_finger_imu" >
+  <xacro:imu_gy521 parent="${name}/right_finger_tip_mount" name="${name}/right_finger_imu" >
     <origin xyz="0 0.023 0" rpy="0 0 3.141" />
   </xacro:imu_gy521>
 
 </xacro:macro> <!-- end xacro:diana_gripper -->
-
-
-
 
 
 <xacro:macro name="dummy_fingertips" >
@@ -322,191 +319,6 @@
 </xacro:macro>
 
 
-<xacro:macro name="digit_fingertips" >
-  <!-- digit sensors on the distal finger brackets -->
-
-  <link name="diana_gripper/left_finger_digit_sensor" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 1.571" />
-      <material name="diana_gripper_left_finger_distal_sensor_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 1.571" />
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="diana_gripper/left_finger_digit_sensor_joint" type="fixed" >
-    <parent link="diana_gripper/left_finger_tip_mount" />
-    <child  link="diana_gripper/left_finger_digit_sensor" />
-    <origin xyz="0 0 0" rpy="0 0 -1.571" />
-  </joint>
-
-  <link name="diana_gripper/right_finger_digit_sensor" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 1.571" />
-      <material name="diana_gripper_right_finger_distal_sensor_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 1.571" />
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="diana_gripper/right_finger_digit_sensor_joint" type="fixed" >
-    <parent link="diana_gripper/right_finger_tip_mount" />
-    <child  link="diana_gripper/right_finger_digit_sensor" />
-    <origin xyz="0 0 0" rpy="0 0 1.571" />
-  </joint>
-</xacro:macro>
-
-
-<xacro:macro name="simple_fingertips" >
-  <!-- simple finger brackets -->
-
-  <link name="diana_gripper/left_fingertip_simple" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_left_fingertip_simple_material" >
-        <color rgba="0.95 1 0 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/fingertip_simple.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/fingertip_simple_hull.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="diana_gripper/left_fingertip_simple_joint" type="fixed" >
-    <parent link="diana_gripper/left_finger_tip_mount" />
-    <child  link="diana_gripper/left_fingertip_simple" />
-    <origin xyz="0 0 0" rpy="0 0 1.571" />
-  </joint>
-
-  <link name="diana_gripper/right_fingertip_simple" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_right_fingertip_simple_material" >
-        <color rgba="0.95 1 0 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/fingertip_simple.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/fingertip_simple_hull.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="diana_gripper/right_fingertip_simple_joint" type="fixed" >
-    <parent link="diana_gripper/right_finger_tip_mount" />
-    <child  link="diana_gripper/right_fingertip_simple" />
-    <origin xyz="0 0 0" rpy="0 0 -1.571" />
-  </joint>
-</xacro:macro>
-
-
-<xacro:macro name="finray_fingertips">
-
-  <link name="diana_gripper/left_finger_finray" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_left_finger_finray_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/finray_finger.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-  </link>
-
-  <joint name="diana_gripper/left_finger_finray_joint" type="fixed" >
-    <parent link="diana_gripper/left_finger_tip_mount" />
-    <child  link="diana_gripper/left_finger_finray" />
-    <origin xyz="0.02 0 -0.01" rpy="1.571 0 3.1415" />
-  </joint>
-
-  <link name="diana_gripper/right_finger_finray" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_right_finger_finray_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/finray_finger.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-  </link>
-
-  <joint name="diana_gripper/right_finger_finray_joint" type="fixed" >
-    <parent link="diana_gripper/right_finger_tip_mount" />
-    <child  link="diana_gripper/right_finger_finray" />
-    <origin xyz="-0.02 0 -0.01" rpy="1.571 0 0" />
-  </joint>
-</xacro:macro>
-
-
-<xacro:macro name="finray_ridges_fingertips">
-
-  <link name="diana_gripper/left_finger_finray_ridges" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_left_finger_finray_ridges_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/finray_finger_slanted_ridges.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-  </link>
-
-  <joint name="diana_gripper/left_finger_finray_ridges_joint" type="fixed" >
-    <parent link="diana_gripper/left_finger_tip_mount" />
-    <child  link="diana_gripper/left_finger_finray_ridges" />
-    <origin xyz="0 0 0" rpy="1.571 0 3.1415" />
-  </joint>
-
-  <link name="diana_gripper/right_finger_finray_ridges" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_right_finger_finray_ridges_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/finray_finger_slanted_ridges.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-  </link>
-
-  <joint name="diana_gripper/right_finger_finray_ridges_joint" type="fixed" >
-    <parent link="diana_gripper/right_finger_tip_mount" />
-    <child  link="diana_gripper/right_finger_finray_ridges" />
-    <origin xyz="0 0 0" rpy="1.571 0 0" />
-  </joint>
-</xacro:macro>
-
 
 <xacro:macro name="tcp">
 
@@ -519,9 +331,6 @@
     <origin xyz="0 0 0.15" rpy="0 0 0" />
   </joint>
 </xacro:macro>
-
-
-
 
 <!--
   <link name="world" />
