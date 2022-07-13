@@ -11,15 +11,28 @@
   <xacro:include filename="$(find diana_gripper)/urdf/diana_gripper.xacro" />
   <xacro:include filename="$(find diana_gripper)/urdf/fingertips.xacro" />
 
+  <!-- the world frame -->
+
+  <link name="world" />
+
+  <!-- the gripper, attached to world -->
 
   <xacro:diana_gripper name="diana_gripper" />
+
+  <joint name="world_diana_gripper_joint" type="fixed" >
+   <parent link="world" />
+   <child  link="diana_gripper" />
+   <origin xyz="0 0 0.1" rpy="0 0 0" />
+  </joint>
+
+  <!-- uncomment to use finray fingertips:
 
   <xacro:finray_ridges_fingertip name="diana_gripper/left_finger_finray" />
 
   <joint name="diana_gripper/left_finger_finray_joint" type="fixed" >
     <parent link="diana_gripper/left_finger_tip_mount" />
     <child  link="diana_gripper/left_finger_finray" />
-    <origin xyz="0.02 0 -0.01" rpy="1.571 0 3.1415" />
+    <origin xyz="0 0 0" rpy="1.571 0 3.1415" /> 
   </joint>
 
   <xacro:finray_ridges_fingertip name="diana_gripper/right_finger_finray" />
@@ -27,13 +40,14 @@
   <joint name="diana_gripper/right_finger_finray_joint" type="fixed" >
     <parent link="diana_gripper/right_finger_tip_mount" />
     <child  link="diana_gripper/right_finger_finray" />
-    <origin xyz="-0.02 0 -0.01" rpy="1.571 0 0" />
+    <origin xyz="0 0 0" rpy="1.571 0 0" />
   </joint>
 
-  <!-- -->
+  -->
+
+  <!-- uncomment to use left-finger digit sensor:
  
   <xacro:digit_fingertip name="diana_gripper/left_finger_digit_sensor" />
-  <xacro:digit_fingertip name="diana_gripper/right_finger_digit_sensor" />
 
   <joint name="diana_gripper/left_finger_digit_sensor_joint" type="fixed" >
     <parent link="diana_gripper/left_finger_tip_mount" />
@@ -41,16 +55,22 @@
     <origin xyz="0 0 0" rpy="0 0 -1.571" />
   </joint>
 
+  -->
+
+  <!-- a digit sensor on the right finger -->
+
+  <xacro:digit_fingertip name="diana_gripper/right_finger_digit_sensor" />
+
   <joint name="diana_gripper/right_finger_digit_sensor_joint" type="fixed" >
     <parent link="diana_gripper/right_finger_tip_mount" />
     <child  link="diana_gripper/right_finger_digit_sensor" />
     <origin xyz="0 0 0" rpy="0 0 1.571" />
   </joint>
 
-  <!-- -->
+  <!-- a simple (pyramid shape) fingertip on the left finger -->
 
   <xacro:simple_fingertip name="diana_gripper/left_finger_simple_fingertip" />
-  <xacro:simple_fingertip name="diana_gripper/right_finger_simple_fingertip" />
+
 
   <joint name="diana_gripper/left_fingertip_simple_joint" type="fixed" >
     <parent link="diana_gripper/left_finger_tip_mount" />
@@ -58,19 +78,16 @@
     <origin xyz="0 0 0" rpy="0 0 1.571" />
   </joint>
 
+  <!-- uncomment for the simple (pyramid) fingertip on the right finger:
+
+  <xacro:simple_fingertip name="diana_gripper/right_finger_simple_fingertip" />
+
   <joint name="diana_gripper/right_fingertip_simple_joint" type="fixed" >
     <parent link="diana_gripper/right_finger_tip_mount" />
     <child  link="diana_gripper/right_finger_simple_fingertip" />
     <origin xyz="0 0 0" rpy="0 0 -1.571" />
   </joint>
-
-
-  <link name="world" />
-
-  <joint name="world_diana_gripper_joint" type="fixed" >
-   <parent link="world" />
-   <child  link="diana_gripper" />
-   <origin xyz="0 0 0.1" rpy="0 0 0" />
-  </joint>
+ 
+  -->
 
 </robot>
