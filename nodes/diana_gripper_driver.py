@@ -95,7 +95,7 @@ load_cell_bias = np.zeros( n_load_cells )
 load_cell_gains = np.ones( n_load_cells )
 forces_averaged = []
 for i in range( n_load_cells ):
-    forces_averaged[i] = collections.deque( maxlen=100 )
+    forces_averaged.append(collections.deque( maxlen=100 ))
 
 
 
@@ -119,7 +119,7 @@ for i in range( len(imu_names) ):
     imu_gyro_scale.append( 1.0 )
 
     # running averages stuff (note: raw data)
-    imu_averaged[ imu_names ] = {}
+    imu_averaged[ imu_names[i] ] = {}
     for k in ['ax', 'ay', 'az', 'gx', 'gy', 'gz']:
         imu_averaged[ imu_names[i] ][ k ] = collections.deque( maxlen=100 )
 
@@ -339,7 +339,7 @@ def get_calibrated_forces( counts ): # raw loadcell readings
     N = len( load_cell_gains )
     forces = np.zeros( N )
     for i in range( N ):
-        forces[i] = grams_to_newtons*(load_cell_bias[i] + counts[i]*load_cell_gains[i]
+        forces[i] = grams_to_newtons*(load_cell_bias[i] + counts[i]*load_cell_gains[i])
     return forces
 
 

@@ -277,7 +277,7 @@ class DianaGripperFollowJointTrajectoryAction( object ):
             # given the current time, find the next trajectory point (if any)
             # 
             t_now = rospy.Time.now()
-            while (ii < iimax) and (t_ii <= t_now):
+            while (ii < iimax-1) and (t_ii <= t_now):
                 ii = ii + 1
                 t_ii = t_start + goal.trajectory.points[ ii ].time_from_start
 
