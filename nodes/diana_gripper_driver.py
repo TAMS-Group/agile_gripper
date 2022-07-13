@@ -93,7 +93,7 @@ n_load_cells = 4
 grams_to_newtons = 0.00981
 load_cell_bias = np.zeros( n_load_cells )
 load_cell_gains = np.ones( n_load_cells )
-forces_averaged = []
+forces_averaged = {}
 for i in range( n_load_cells ):
     forces_averaged[i] = collections.deque( maxlen=100 )
 
@@ -119,7 +119,7 @@ for i in range( len(imu_names) ):
     imu_gyro_scale.append( 1.0 )
 
     # running averages stuff (note: raw data)
-    imu_averaged[ imu_names ] = {}
+    imu_averaged[ imu_names[i] ] = {}
     for k in ['ax', 'ay', 'az', 'gx', 'gy', 'gz']:
         imu_averaged[ imu_names[i] ][ k ] = collections.deque( maxlen=100 )
 
@@ -339,15 +339,20 @@ def get_calibrated_forces( counts ): # raw loadcell readings
     N = len( load_cell_gains )
     forces = np.zeros( N )
     for i in range( N ):
-        forces[i] = grams_to_newtons*(load_cell_bias[i] + counts[i]*load_cell_gains[i]
+        forces[i] = grams_to_newtons*(load_cell_bias[i] + counts[i]*load_cell_gains[i])
     return forces
 
 
 last_seq_number = -1
 last_arduino_millis = -1
+n_checked_messages = 0
+n_dropped_messages = 0
+
 
 def check_seq_and_stamp( seq_number, arduino_millis ):
-    global last_seq_number, last_arduino_millis
+    global last_seq_number, last_arduino_millis, n_checked_messages, n_dropped_messages
+
+    n_checked_messages += 1
 
     # initialize data on first call(s)
     #
@@ -361,20 +366,29 @@ def check_seq_and_stamp( seq_number, arduino_millis ):
 
     # compare and warn
     # 
+    seq_and_stamp_ok = True
     if (seq_number - last_seq_number) == 1: # expected case
         pass
     elif (seq_number - last_seq_number) == -255: # wrap around
         pass
     else:
-        rospy.logerr( "### packet loss: got " + str(seq_number) + " previous " + str(last_seq_number) )
+        n_dropped_messages += 1
+        rospy.logwarn( "### packet loss: got " + str(seq_number) + " previous " + str(last_seq_number) 
+                    + "   lost " + str(n_dropped_messages) + " / " + str(n_checked_messages) + " received." )
+        seq_and_stamp_ok = False
 
     if (arduino_millis - last_arduino_millis) < 10: # ok
         pass
     elif (arduino_millis + 256 - last_arduino_millis) < 10: # wrap around
         pass
     else:
-        rospy.logerr( "### packet delay: got " + str(arduino_millis) + " previous " + str(last_arduino_millis) 
-                    + " (msecs.)" )
+        rospy.logwarn( "### packet delay: got " + str(arduino_millis) + " previous " + str(last_arduino_millis) 
+                    + " (msecs.)" 
+                    + "   lost " + str(n_dropped_messages) + " / " + str(n_checked_messages) + " received." )
+        seq_and_stamp_ok = False
+
+    if seq_and_stamp_ok and verbose > 4:
+        print( "... seq_and_stamp ok: " + str( seq_number ) + "   " + str( arduino_millis ))
  
     # update
     # 
@@ -419,6 +433,8 @@ def diana_gripper_driver():
         rate_hz = rospy.get_param( '~rate' )
     rate = rospy.Rate( rate_hz )
     print( '... loop rate is ' + str(rate_hz) + ' hz.' )
+    rospy.logerr( '... loop rate is ' + str(rate_hz) + ' hz.' )
+
 
     # Serial-port stuff 
     # 
