@@ -9,9 +9,61 @@
    -->
 
   <xacro:include filename="$(find diana_gripper)/urdf/diana_gripper.xacro" />
+  <xacro:include filename="$(find diana_gripper)/urdf/fingertips.xacro" />
 
 
   <xacro:diana_gripper name="diana_gripper" />
+
+  <xacro:finray_ridges_fingertip name="diana_gripper/left_finger_finray" />
+
+  <joint name="diana_gripper/left_finger_finray_joint" type="fixed" >
+    <parent link="diana_gripper/left_finger_tip_mount" />
+    <child  link="diana_gripper/left_finger_finray" />
+    <origin xyz="0.02 0 -0.01" rpy="1.571 0 3.1415" />
+  </joint>
+
+  <xacro:finray_ridges_fingertip name="diana_gripper/right_finger_finray" />
+
+  <joint name="diana_gripper/right_finger_finray_joint" type="fixed" >
+    <parent link="diana_gripper/right_finger_tip_mount" />
+    <child  link="diana_gripper/right_finger_finray" />
+    <origin xyz="-0.02 0 -0.01" rpy="1.571 0 0" />
+  </joint>
+
+  <!-- -->
+ 
+  <xacro:digit_fingertip name="diana_gripper/left_finger_digit_sensor" />
+  <xacro:digit_fingertip name="diana_gripper/right_finger_digit_sensor" />
+
+  <joint name="diana_gripper/left_finger_digit_sensor_joint" type="fixed" >
+    <parent link="diana_gripper/left_finger_tip_mount" />
+    <child  link="diana_gripper/left_finger_digit_sensor" />
+    <origin xyz="0 0 0" rpy="0 0 -1.571" />
+  </joint>
+
+  <joint name="diana_gripper/right_finger_digit_sensor_joint" type="fixed" >
+    <parent link="diana_gripper/right_finger_tip_mount" />
+    <child  link="diana_gripper/right_finger_digit_sensor" />
+    <origin xyz="0 0 0" rpy="0 0 1.571" />
+  </joint>
+
+  <!-- -->
+
+  <xacro:simple_fingertip name="diana_gripper/left_finger_simple_fingertip" />
+  <xacro:simple_fingertip name="diana_gripper/right_finger_simple_fingertip" />
+
+  <joint name="diana_gripper/left_fingertip_simple_joint" type="fixed" >
+    <parent link="diana_gripper/left_finger_tip_mount" />
+    <child  link="diana_gripper/left_finger_simple_fingertip" />
+    <origin xyz="0 0 0" rpy="0 0 1.571" />
+  </joint>
+
+  <joint name="diana_gripper/right_fingertip_simple_joint" type="fixed" >
+    <parent link="diana_gripper/right_finger_tip_mount" />
+    <child  link="diana_gripper/right_finger_simple_fingertip" />
+    <origin xyz="0 0 0" rpy="0 0 -1.571" />
+  </joint>
+
 
   <link name="world" />
 
