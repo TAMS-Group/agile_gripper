@@ -283,8 +283,8 @@
   <!-- <xacro:dummy_fingertips/>
   <xacro:digit_fingertips/>
   <xacro:finray_fingertips/> 
-  <xacro:finray_ridges_fingertips/> -->
-  <xacro:simple_fingertips/> 
+  <xacro:finray_ridges_fingertips/>
+  <xacro:simple_fingertips/>  -->
   <xacro:tcp/> 
 
   <xacro:imu_gy521 parent="diana_gripper/left_finger_tip_mount" name="diana_gripper/left_finger_imu" >
@@ -295,9 +295,6 @@
   </xacro:imu_gy521>
 
 </xacro:macro> <!-- end xacro:diana_gripper -->
-
-
-
 
 
 <xacro:macro name="dummy_fingertips" >
@@ -322,191 +319,6 @@
 </xacro:macro>
 
 
-<xacro:macro name="digit_fingertips" >
-  <!-- digit sensors on the distal finger brackets -->
-
-  <link name="diana_gripper/left_finger_digit_sensor" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 1.571" />
-      <material name="diana_gripper_left_finger_distal_sensor_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 1.571" />
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="diana_gripper/left_finger_digit_sensor_joint" type="fixed" >
-    <parent link="diana_gripper/left_finger_tip_mount" />
-    <child  link="diana_gripper/left_finger_digit_sensor" />
-    <origin xyz="0 0 0" rpy="0 0 -1.571" />
-  </joint>
-
-  <link name="diana_gripper/right_finger_digit_sensor" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 1.571" />
-      <material name="diana_gripper_right_finger_distal_sensor_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 1.571" />
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="diana_gripper/right_finger_digit_sensor_joint" type="fixed" >
-    <parent link="diana_gripper/right_finger_tip_mount" />
-    <child  link="diana_gripper/right_finger_digit_sensor" />
-    <origin xyz="0 0 0" rpy="0 0 1.571" />
-  </joint>
-</xacro:macro>
-
-
-<xacro:macro name="simple_fingertips" >
-  <!-- simple finger brackets -->
-
-  <link name="diana_gripper/left_fingertip_simple" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_left_fingertip_simple_material" >
-        <color rgba="0.95 1 0 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/fingertip_simple.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/fingertip_simple_hull.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="diana_gripper/left_fingertip_simple_joint" type="fixed" >
-    <parent link="diana_gripper/left_finger_tip_mount" />
-    <child  link="diana_gripper/left_fingertip_simple" />
-    <origin xyz="0 0 0" rpy="0 0 1.571" />
-  </joint>
-
-  <link name="diana_gripper/right_fingertip_simple" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_right_fingertip_simple_material" >
-        <color rgba="0.95 1 0 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/fingertip_simple.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/fingertip_simple_hull.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="diana_gripper/right_fingertip_simple_joint" type="fixed" >
-    <parent link="diana_gripper/right_finger_tip_mount" />
-    <child  link="diana_gripper/right_fingertip_simple" />
-    <origin xyz="0 0 0" rpy="0 0 -1.571" />
-  </joint>
-</xacro:macro>
-
-
-<xacro:macro name="finray_fingertips">
-
-  <link name="diana_gripper/left_finger_finray" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_left_finger_finray_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/finray_finger.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-  </link>
-
-  <joint name="diana_gripper/left_finger_finray_joint" type="fixed" >
-    <parent link="diana_gripper/left_finger_tip_mount" />
-    <child  link="diana_gripper/left_finger_finray" />
-    <origin xyz="0.02 0 -0.01" rpy="1.571 0 3.1415" />
-  </joint>
-
-  <link name="diana_gripper/right_finger_finray" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_right_finger_finray_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/finray_finger.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-  </link>
-
-  <joint name="diana_gripper/right_finger_finray_joint" type="fixed" >
-    <parent link="diana_gripper/right_finger_tip_mount" />
-    <child  link="diana_gripper/right_finger_finray" />
-    <origin xyz="-0.02 0 -0.01" rpy="1.571 0 0" />
-  </joint>
-</xacro:macro>
-
-
-<xacro:macro name="finray_ridges_fingertips">
-
-  <link name="diana_gripper/left_finger_finray_ridges" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_left_finger_finray_ridges_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/finray_finger_slanted_ridges.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-  </link>
-
-  <joint name="diana_gripper/left_finger_finray_ridges_joint" type="fixed" >
-    <parent link="diana_gripper/left_finger_tip_mount" />
-    <child  link="diana_gripper/left_finger_finray_ridges" />
-    <origin xyz="0 0 0" rpy="1.571 0 3.1415" />
-  </joint>
-
-  <link name="diana_gripper/right_finger_finray_ridges" >
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <material name="diana_gripper_right_finger_finray_ridges_material" >
-        <color rgba="0.4 0.4 0.4 1.0" />
-      </material> 
-      <geometry>
-        <mesh filename="package://diana_gripper/meshes/finray_finger_slanted_ridges.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-  </link>
-
-  <joint name="diana_gripper/right_finger_finray_ridges_joint" type="fixed" >
-    <parent link="diana_gripper/right_finger_tip_mount" />
-    <child  link="diana_gripper/right_finger_finray_ridges" />
-    <origin xyz="0 0 0" rpy="1.571 0 0" />
-  </joint>
-</xacro:macro>
-
 
 <xacro:macro name="tcp">
 
@@ -519,9 +331,6 @@
     <origin xyz="0 0 0.15" rpy="0 0 0" />
   </joint>
 </xacro:macro>
-
-
-
 
 <!--
   <link name="world" />
