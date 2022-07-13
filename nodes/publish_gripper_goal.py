@@ -14,7 +14,7 @@ print( "#### 2 ####" )
 
 rospy.init_node('diana_gripper_goal_publisher', anonymous=False, disable_signals=True )
 
-pub = rospy.Publisher( '/diana_gripper_controller/follow_joint_trajectory_action/goal',
+pub = rospy.Publisher( '/diana_gripper_controller/follow_joint_trajectory/goal',
                        control_msgs.msg.FollowJointTrajectoryActionGoal,
                        queue_size=1 )
 
