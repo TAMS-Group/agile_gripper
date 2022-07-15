@@ -219,7 +219,7 @@ class DianaGripperFollowJointTrajectoryAction( object ):
     def execute_callback( self, goal ):
         if self.verbose >= 0:
             print( "DianaGripperFJTAS.execute_callback... n_points = " + str( len( goal.trajectory.points )) + " ... " )
-            print( type( goal ))
+            # print( type( goal ))
         if self.verbose >= 3:
             print( goal )
 
@@ -252,7 +252,7 @@ class DianaGripperFollowJointTrajectoryAction( object ):
         t_now   = rospy.Time.now()
         t_start = rospy.Time.now() + goal.trajectory.points[0].time_from_start
         t_end   = rospy.Time.now() + goal.trajectory.points[-1].time_from_start
-        print( '... Trajectory t_start ' + str( t_start.to_sec() ) + ' t_end ' + str( t_end.to_sec() )
+        print( '... trajectory t_start ' + str( t_start.to_sec() ) + ' t_end ' + str( t_end.to_sec() )
                + ' duration ' + str( (t_end - t_start).to_sec() ))
 
         last_feedback_ii = -1 # none yet
@@ -338,11 +338,11 @@ class DianaGripperFollowJointTrajectoryAction( object ):
         # end of the t_now < t_end loop. Send the last trajectory point (again)
         # to make sure that we arrive at the target...
         #
-        print( '... loop complete, moving to last trajectory point (again)...' )
+        print( '... trajectory loop complete, moving to last trajectory point...' )
         GG,VV = self.interpolate_point( goal.trajectory.points[-1], goal.trajectory.points[-1], 1.0 )
         self.move_to_interpolated_point( goal, GG, VV ) 
 
-        print( '... trajectory FINISHED.' )
+        print( '... trajectory executed.' )
         if success: 
             # does NOT work...
             # self.result.header = goal.trajectory.header
@@ -355,7 +355,7 @@ class DianaGripperFollowJointTrajectoryAction( object ):
             self.result.error_string = 'ok.'
             # self.result.goal_id = goal.goal_id HOW TO ACCESS the goal_id ????
 
-            rospy.loginfo('%s: Succeeded' % self.action_name)
+            print( '%s: Succeeded' % self.action_name )
             self.action_server.set_succeeded(self.result)
 
 
