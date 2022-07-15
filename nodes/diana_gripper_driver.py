@@ -29,6 +29,10 @@ import numpy as np
 import threading
 import traceback
 
+# import gc
+# gc.set_debug(gc.DEBUG_STATS)
+# print( gc )
+
 import rospy
 import std_msgs.msg
 import sensor_msgs.msg
@@ -55,11 +59,14 @@ n_joints = 4
 short_joint_names  = ['LFJ2', 'LFJ1', 'RFJ2', 'RFJ1' ]  
 joint_names  = [hand_name + '/' + s for s in short_joint_names]
 joint_index = {}
+
 for j in range( len(short_joint_names) ):
-     joint_index[ short_joint_names[j]] = j
+    joint_index[ short_joint_names[j]] = j
 for j in range( len(joint_names) ):
-     joint_index[ joint_names[j]] = j
-print( joint_index ) # debugging only
+    joint_index[ joint_names[j]] = j
+
+if verbose > 3:
+    print( joint_index ) # debugging only
 
 
 # JointState and raw sensor Joy messages
@@ -93,7 +100,7 @@ n_load_cells = 4
 grams_to_newtons = 0.00981
 load_cell_bias = np.zeros( n_load_cells )
 load_cell_gains = np.ones( n_load_cells )
-forces_averaged = {}
+forces_averaged = []
 for i in range( n_load_cells ):
     forces_averaged.append(collections.deque( maxlen=100 ))
 
@@ -347,10 +354,12 @@ last_seq_number = -1
 last_arduino_millis = -1
 n_checked_messages = 0
 n_dropped_messages = 0
+ave_ser_in_waiting = 0.0
 
 
 def check_seq_and_stamp( seq_number, arduino_millis ):
     global last_seq_number, last_arduino_millis, n_checked_messages, n_dropped_messages
+    global ave_ser_in_waiting, ser
 
     n_checked_messages += 1
 
@@ -374,6 +383,7 @@ def check_seq_and_stamp( seq_number, arduino_millis ):
     else:
         n_dropped_messages += 1
         rospy.logwarn( "### packet loss: got " + str(seq_number) + " previous " + str(last_seq_number) 
+                    + "   ave in_waiting: " + str( ave_ser_in_waiting )
                     + "   lost " + str(n_dropped_messages) + " / " + str(n_checked_messages) + " received." )
         seq_and_stamp_ok = False
 
@@ -384,11 +394,15 @@ def check_seq_and_stamp( seq_number, arduino_millis ):
     else:
         rospy.logwarn( "### packet delay: got " + str(arduino_millis) + " previous " + str(last_arduino_millis) 
                     + " (msecs.)" 
+                    + "   ave in_waiting: " + str( ave_ser_in_waiting )
                     + "   lost " + str(n_dropped_messages) + " / " + str(n_checked_messages) + " received." )
         seq_and_stamp_ok = False
 
     if seq_and_stamp_ok and verbose > 4:
         print( "... seq_and_stamp ok: " + str( seq_number ) + "   " + str( arduino_millis ))
+
+    # check and update pyserial/kernel input buffer
+    ave_ser_in_waiting = 0.99*ave_ser_in_waiting + 0.01*ser.in_waiting
  
     # update
     # 
@@ -404,11 +418,12 @@ def diana_gripper_driver():
     global have_new_motion_goal, joint_state_goal
     global previous_positions, previous_positions_stamp
     global previous_torques, previous_torques_stamp
+    global ser, ave_ser_in_waiting
 
     global n_sensors, forces_bias, forces_gains
     global set_zero_bias_in_progress, set_zero_bias_start_time, set_zero_bias_interval, set_zero_bias_channels
     global set_gains_in_progress, set_gains_tokens
-    print( "diana_gripper init...\n" )
+    print( "diana_gripper driver node init...\n" )
 
     # UDP Socket
     # ARDUINO_IP = "192.168.104.97";   # unused, hardcoded in INFFUL network setup
@@ -505,14 +520,14 @@ def diana_gripper_driver():
     # 
     joint_goal_subscriber = rospy.Subscriber( '~joint_goals', sensor_msgs.msg.JointState, joint_goal_callback )
     simple_goal_subscriber = rospy.Subscriber( '~simple_goal', sensor_msgs.msg.JointState, simple_goal_callback )
-    print( "got the ROS node and publishers..." )
+    print( "... got the ROS node and publishers..." )
 
     # start ROS main loop
     # 
     while running and not rospy.is_shutdown():
         iteration = iteration + 1
         if (verbose > 3): 
-            print( "diana_gripper loop iteration " + str(iteration) + "..." )
+            print( "... diana_gripper loop iteration " + str(iteration) + "..." )
 
         try:
             if (have_text_command == 1):
@@ -551,8 +566,11 @@ def diana_gripper_driver():
             except Exception:
                 print(traceback.format_exc())
 
-            if (verbose > 2) or ((iteration / 1000) == 999):
-                print( "received message: ", data);
+            if (verbose > 2) and ((iteration % 1000) == 999):
+                print( "average ser.in_waiting: " + str(ave_ser_in_waiting))
+
+            if (verbose > 5) or (verbose > 3) and ((iteration % 10000) == 9999):
+                print( "received message: " + str(data))
 
             if (data[0] == 'D'): # old style joint_state packet
 
@@ -774,6 +792,14 @@ def diana_gripper_driver():
                         for j in range( len( data )):
                             print( ord(data[j]) )
 
+            # rate.sleep() # drops serial data as the buffer fills up too quickly...
+            # So, check buffer fill level and only wait if capacity remains
+            if ser.in_waiting < 200:
+                rospy.sleep( rospy.Duration( 0.002 ))
+            elif ser.in_waiting < 500:
+                rospy.sleep( rospy.Duration( 0.001 ))
+
+
         except ValueError:
             print( "Parsing data failed: '" + str(data) + "'" )
             continue
@@ -782,10 +808,8 @@ def diana_gripper_driver():
             running = False
             pass
 
-        rate.sleep()
-
     ser.close()
-    print( "diana_gripper node stopped." )
+    print( "diana_gripper node driver stopped." )
     
 
 
