@@ -26,7 +26,8 @@ msg.header.stamp = rospy.Time.now()
 msg.header.frame_id = "HUGO"
 
 msg.goal_id.stamp = msg.header.stamp
-msg.goal_id.id = "/move_group-5-1657298927.312892807"
+#msg.goal_id.id = "/move_group-5-1657298927.312892807"
+msg.goal_id.id = "/move_group-5-" + str( rospy.Time.now() )
 
 print( "#### 4 ####" )
 
