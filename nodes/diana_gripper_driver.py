@@ -111,8 +111,6 @@ for i in range( n_load_cells ):
 #
 # imu_names = ['palm_imu', 'LF_imu', 'RF_imu' ] # palm IMU on Arduino nano 33 IOT, two IMUs on middle finger and thumb
 imu_names = ['palm_imu' ] # only the main 'palm' IMU
-imu_accel_scale = []
-imu_gyro_scale = []
 imu_messages = []
 imu_raw_joy_messages = []
 imu_calibration = []
@@ -122,11 +120,29 @@ for i in range( len(imu_names) ):
     imu_raw_joy_messages.append( sensor_msgs.msg.Joy() )
     imu_messages.append( sensor_msgs.msg.Imu() )
     imu_calibration.append( {} )
-    imu_accel_scale.append( 1.0 )
-    imu_gyro_scale.append( 1.0 )
+
+    # default gain is 1.0, default bias is 0 counts. Scale depends on the IMU used
+    # and the selected sensitivity and should be set via parameters.
+    #
+    imu_calibration[i][ 'accel_scale' ] = 4.0 * 9.81 / 32768.0  # 4g max at 16-bit signed, default LSM6DS3
+    imu_calibration[i][ 'accel_gain_x' ] = 1.0
+    imu_calibration[i][ 'accel_gain_y' ] = 1.0
+    imu_calibration[i][ 'accel_gain_z' ] = 1.0
+    imu_calibration[i][ 'accel_bias_x' ] = 0.0
+    imu_calibration[i][ 'accel_bias_y' ] = 0.0
+    imu_calibration[i][ 'accel_bias_z' ] = 0.0
+
+    imu_calibration[i][ 'gyro_scale' ] = 250.0 * DEG2RAD / 32768  # 250 deg/s max at 16 bit signed
+    imu_calibration[i][ 'gyro_gain_x' ] = 1.0
+    imu_calibration[i][ 'gyro_gain_y' ] = 1.0
+    imu_calibration[i][ 'gyro_gain_z' ] = 1.0
+    imu_calibration[i][ 'gyro_bias_x' ] = 0.0
+    imu_calibration[i][ 'gyro_bias_y' ] = 0.0
+    imu_calibration[i][ 'gyro_bias_z' ] = 0.0
 
     # running averages stuff (note: raw data)
     imu_averaged[ imu_names[i] ] = {}
+
     for k in ['ax', 'ay', 'az', 'gx', 'gy', 'gz']:
         imu_averaged[ imu_names[i] ][ k ] = collections.deque( maxlen=100 )
 
@@ -189,11 +205,12 @@ def radians_to_counts( j, radians ): # map ROS angle (rad) to SCS servo #j count
 # channels of the "palm_imu".
 #
 def tara( msg ):
-    global load_cell_bias, load_cell_gains 
+    global load_cell_bias, load_cell_gains, forces_averaged
+    global imu_calibration, imu_averaged
 
     cmd = msg
     if msg.startswith( 'tara'): 
-        cmd = msg.substring( 4 )
+        cmd = msg[4:] # no substring method, need slicing
  
     print( "... tara command: >" + str(cmd) + "< ..." )
 
@@ -203,26 +220,45 @@ def tara( msg ):
     #
     for i in range( len( load_cell_gains) ):
         if cmd.find( str(i) ) >= 0:
-            load_cell_bias[i] = -load_cell_gains[i]*forces_averaged[i] 
-            print( "... load-cell[" + str(i) + "] new bias:" + str( load_cell_bias[i] ))
+            if verbose > 3:
+                print( "### tara for load cell index " + str(i) + "..." )
+
+            mean_force = 1.0 * sum( forces_averaged[i] ) / len( forces_averaged[i] )
+            load_cell_bias[i] = -load_cell_gains[i]*mean_force
+
+            if verbose > 3:
+                print( "### tara for load cell " + str(i) 
+                     + " n_samples " + str(len( forces_averaged[i] ))
+                     + " sum " + str( sum( forces_averaged[i] ))
+                     + " force_ave " + str( mean_force )
+                     + " new bias " + str( load_cell_bias[i] ))
+            else:
+                print( "... load-cell[" + str(i) + "] new bias:" + str( load_cell_bias[i] ))
     print( "... load-cell tara ok." )
 
     # gyro tara selected by 'g' (all IMUs), calculate running average from current data
     #
+    gyro_channel_keys = ['gx', 'gy', 'gz']
+    gyro_bias_names   = ['gyro_bias_x', 'gyro_bias_y', 'gyro_bias_z'] 
     for i in range( len( imu_names )):
         imu_name = imu_names[i]
-        for k in ['gx', 'gy', 'gz']:
-            if cmd.find( k ) < 0: 
-                continue    # skip gx gy gz if not selected in command
 
-            n_samples = len( imu_averaged[imu_name][k] )
+        for k in range(len(gyro_channel_keys)):
+            if cmd.find( gyro_channel_keys[k] ) < 0: 
+                continue    # skip gx gy gz if not selected in command
+            print( "### Found " + str(gyro_channel_keys[k]) + " in command: " + str(cmd) )
+
+            n_samples = len( imu_averaged[imu_name][gyro_channel_keys[k]] )
+            print( "### have " + str(n_samples) + " samples from IMU, averaging now..." )
+
             if n_samples <= 0:
                 continue    # also skip if not enough values
 
-            ss = sum( imu_averaged[imu_name][k] ) / n_samples
+            ss = sum( imu_averaged[imu_name][gyro_channel_keys[k]] )
             bb = -ss / n_samples
-            gyro_bias[imu_name][key] = bb
-            rospy.logerr( "... " + imu_name + ": new gyro bias " + k + ": " + str( bb ))
+            print( "### " + imu_name + ": new gyro bias " + str(k) + ": " + str( bb ))
+
+            imu_calibration[i][gyro_bias_names[k]] = bb
 
     print( "... gyro tara ok." )
 
@@ -240,6 +276,7 @@ def tara( msg ):
 def handle_text_command( request ):
     global text_command
     global have_text_command
+    global verbose 
     print( "####################" )
     print( "handle_text_command: Received '" + str( request.command ))
 
@@ -249,10 +286,17 @@ def handle_text_command( request ):
 
     # special handling for some commands...
     # 
-    if (request.command.startswith( "tara" )):
-       tara()
-
-    else:
+    if (request.command.startswith( "verbose" )): # handled by us, use "V..." to set Arduino level
+       try:
+           verbose = int( request.command[7:] )
+           print( "### new verbose level: " + verbose )
+       except Exception as e:
+           print( "### invalid int format for verbose command '" + request.command + "', ignored." )
+      
+    elif (request.command.startswith( "tara" )):
+       tara( request.command )
+      
+    else: # forward to Arduino on next iteration 
        text_command = request.command
        have_text_command = 1
 
@@ -266,7 +310,8 @@ def simple_goal_callback( msg ):
     global have_new_motion_goal
     global joint_state_goal
     # rospy.loginfo( rospy.get_called_id() + " Got new simple joint goal " + str(msg) )
-    print( "Got new simple goal " + str(msg) )
+    if verbose > 2:
+        print( "Got new simple goal " + str(msg) )
 
     try: 
         mutex.acquire()
@@ -472,21 +517,26 @@ def diana_gripper_driver():
     #
     for i in range( len( imu_names )):
         if (verbose > 1): print( '... checking calibration parameters for IMU ' + imu_names[i] )
-        nnames = ['gyro_scale', 'gyro_bias_x', 'gyro_bias_y', 'gyro_bias_z', 'accel_scale', 'accel_bias_x', 'accel_bias_y', 'accel_bias_z']
-        nvals  = [ 250.0*DEG2RAD/32768.0, 0.0, 0.0, 0.0, (2.0*9.81/32768.0), 1.0, 1.0, 1.0 ]
+        nnames = ['gyro_scale', 
+                  'gyro_gain_x', 'gyro_gain_y', 'gyro_gain_z', 
+                  'gyro_bias_x', 'gyro_bias_y', 'gyro_bias_z', 
+                  'accel_scale',  
+                  'accel_gain_x', 'accel_gain_y', 'accel_gain_z',
+                  'accel_bias_x', 'accel_bias_y', 'accel_bias_z']
+        nvals  = [ 250.0*DEG2RAD/32768.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
+                   4.0*9.81/32768.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0 ] 
 
         for n in range( len( nnames )):
-            pname = 'ugly_hand/' + imu_names[i] + '/' + nnames[n]
-            if (verbose > 2): print( '... checking param ' + pname )
+            pname = 'diana_gripper/' + imu_names[i] + '/' + nnames[n]
+            if (verbose > 1): print( '... checking param ' + pname )
             if rospy.has_param( pname ):
                 value = rospy.get_param( pname )
                 imu_calibration[ i ][ nnames[n] ] = value
-                print( '... param ' + pname + ' = ' + str(value) )
                 # print( imu_calibration[ i ][ nnames[n] ] )
             else:
-                imu_calibration[ i ][ nnames[n] ] = 0.0
-                value = nvals[ n ]
-                if (verbose > 2): print( '... param ' + pname + ' = ' + str(value) )
+                imu_calibration[ i ][ nnames[n] ] = nvals[n]
+
+            if (verbose > 2): print( '... param ' + pname + ' = ' + str(imu_calibration[i][nnames[n]]) )
 
 
     # ROS publishers and subscribers
@@ -656,29 +706,49 @@ def diana_gripper_driver():
                 joy.header.frame_id = hand_name + '/' + imu_names[ imu_index ] + '/frame'
                 joy.header.stamp    = rospy.Time.now()
                 joy.axes            = []
+
                 joy.axes.append( ax )
                 joy.axes.append( ay )
                 joy.axes.append( az )
                 joy.axes.append( gx )
                 joy.axes.append( gy )
                 joy.axes.append( gz )
+
                 imu_raw_joy_publishers[imu_index].publish( joy )
 
-                # FIXME: replace hardcoded values for MPU6050 with params
-                accel_scale = 2.0 * 9.81 / 32768.0   #  2g max at 16-bit signed
-                gyro_scale  = 250.0 * DEG2RAD / 32768  # 250 deg/s max at 16 bit signed
+                # put into ring-buffers for averaging/tara
+                # 
+                imu_counts = [ax, ay, az, gx, gy, gz]
+                channels = ['ax', 'ay', 'az', 'gx', 'gy', 'gz']
+                for k in range( 6 ):
+                    # print( "### " + str(k) + " counts " + str( imu_counts[k] ))
+                    # print( "    " + str( channels[k] ))
+                    # print( "<<< " + str(imu_averaged[imu_names[imu_index]][channels[k]]) )
+                    imu_averaged[ imu_names[imu_index] ][channels[k]].append( imu_counts[k] )
+
+                # FIXME: replace hardcoded values for LSM6DS3 and MPU6050 with params
+                #
+                # accel_scale = 4.0 * 9.81 / 32768.0   #  4g max at 16-bit signed, default for LSM6DS3
+                # gyro_scale  = 250.0 * DEG2RAD / 32768  # 250 deg/s max at 16 bit signed
+
+                CAL = imu_calibration[ imu_index ]
 
                 imu_msg = imu_messages[ imu_index ]
-
                 imu_msg.header.frame_id = hand_name + '/' + imu_names[ imu_index ] + '/frame'
                 imu_msg.header.stamp    = joy.header.stamp
-                imu_msg.linear_acceleration.x = ax * accel_scale
-                imu_msg.linear_acceleration.y = ay * accel_scale
-                imu_msg.linear_acceleration.z = az * accel_scale
-                imu_msg.angular_velocity.x = gx * gyro_scale - imu_calibration[ imu_index ]['gyro_bias_x']
-                imu_msg.angular_velocity.y = gy * gyro_scale - imu_calibration[ imu_index ]['gyro_bias_y']
-                imu_msg.angular_velocity.z = gz * gyro_scale - imu_calibration[ imu_index ]['gyro_bias_z']
-                imu_publishers[0].publish( imu_msg )
+ 
+                # multiply counts (ax,ay,az) with channel gains, add bias, convert to SI units scale
+                #
+                aa = CAL[ 'accel_scale' ]
+                imu_msg.linear_acceleration.x = aa * (CAL[ 'accel_bias_x'] + ax * CAL[ 'accel_gain_x' ] )
+                imu_msg.linear_acceleration.y = aa * (CAL[ 'accel_bias_y'] + ay * CAL[ 'accel_gain_y' ] )
+                imu_msg.linear_acceleration.z = aa * (CAL[ 'accel_bias_z'] + az * CAL[ 'accel_gain_z' ] )
+
+                gg = CAL[ 'gyro_scale' ]
+                imu_msg.angular_velocity.x = gg * (CAL[ 'gyro_bias_x' ] + gx * CAL[ 'gyro_gain_x' ] )
+                imu_msg.angular_velocity.y = gg * (CAL[ 'gyro_bias_y' ] + gy * CAL[ 'gyro_gain_y' ] )
+                imu_msg.angular_velocity.z = gg * (CAL[ 'gyro_bias_z' ] + gz * CAL[ 'gyro_gain_z' ] )
+                imu_publishers[ imu_index ].publish( imu_msg )
 
             elif (data[0] == 'I'): # servo currents
                 (str_I, seq_number, stamp, str_amps, u1, u2, u3, u4 ) = \
