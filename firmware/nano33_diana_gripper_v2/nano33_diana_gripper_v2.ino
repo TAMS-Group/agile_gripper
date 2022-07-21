@@ -621,7 +621,6 @@ void sendServoTorques() {
       scsWatchdog.start( SCS_TIMEOUT_MICROS, AsyncDelay::MICROS);
       joint_torque_counts[j]   = sms.ReadLoad( id );
       if (scsWatchdog.isExpired()) handleServoTimeout( j );
-        Serial.print( print_buffer ); Serial.flush();
    }
     else {
       sprintf( print_buffer, "... Unknown servo type: %d ignored.\n", type );
