@@ -37,9 +37,9 @@
 
       <!-- one single lump as a collision block, covers base plate, four load cells, two servo carriers -->
       <collision>
-        <origin xyz="0 0 ${(0.02+0.0127)/2}" rpy="0 0 0" />
+        <origin xyz="0 0.025 ${(0.02+0.0127)/2}" rpy="0 0 0" />
         <geometry>
-          <box size="${0.075*2} 0.105 ${0.02+0.0127}" />
+          <box size="${0.075*2} ${0.105 + 0.05} ${0.02+0.0127}" />
         </geometry>
       </collision>
   </link>
