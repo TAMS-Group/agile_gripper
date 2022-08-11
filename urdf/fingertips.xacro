@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="digit_fingertip">
 
- <xacro:macro name="digit_fingertip" params="name">
-  <!-- digit sensors on the distal finger brackets -->
+<xacro:macro name="digit_fingertip" params="name">
+<!-- digit sensors on the distal finger brackets -->
 
   <link name="${name}" >
     <visual>
@@ -18,6 +18,28 @@
       <origin xyz="0 0 0" rpy="0 0 1.571" />
       <geometry>
         <mesh filename="package://diana_gripper/meshes/digit_sensor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+</xacro:macro>
+
+<xacro:macro name="digit_multitip_fingertip" params="name">
+<!-- digit sensors on the distal finger brackets -->
+
+  <link name="${name}" >
+    <visual>
+      <origin xyz="0 -0.01 0" rpy="0 0 3.141" />
+      <material name="${name}_material" >
+        <color rgba="0.4 0.4 0.4 1.0" />
+      </material> 
+      <geometry>
+        <mesh filename="package://diana_gripper/meshes/multitip.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.01 0" rpy="0 0 3.141" />
+      <geometry>
+        <mesh filename="package://diana_gripper/meshes/multitip_hull.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
   </link>
