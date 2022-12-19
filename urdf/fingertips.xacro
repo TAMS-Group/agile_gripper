@@ -5,6 +5,12 @@
 <!-- digit sensors on the distal finger brackets -->
 
   <link name="${name}" >
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.051" />
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001" />
+    </inertial>
+
     <visual>
       <origin xyz="0 0 0" rpy="0 0 1.571" />
       <material name="${name}_material" >
@@ -27,6 +33,12 @@
 <!-- digit sensors on the distal finger brackets -->
 
   <link name="${name}" >
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.051" />
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001" />
+    </inertial>
+
     <visual>
       <origin xyz="0 -0.01 0" rpy="0 0 3.141" />
       <material name="${name}_material" >
@@ -49,6 +61,12 @@
   <!-- simple finger brackets -->
 
   <link name="${name}" >
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.011" />
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001" />
+    </inertial>
+
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <material name="${name}_material" >
@@ -71,6 +89,12 @@
 <xacro:macro name="finray_fingertip" params="name">
 
   <link name="${name}" >
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.021" />
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001" />
+    </inertial>
+
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <material name="${name}_material" >
@@ -87,6 +111,12 @@
 <xacro:macro name="finray_ridges_fingertip" params="name">
 
   <link name="${name}" >
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.021" />
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001" />
+    </inertial>
+
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <material name="${name}_material" >
