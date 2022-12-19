@@ -8,7 +8,7 @@
   <xacro:include filename="$(find diana_gripper)/urdf/imu_gy521.xacro" />
   <xacro:include filename="$(find diana_gripper)/urdf/fingertip.xacro" />
 
-  <xacro:diana_gripper_control_plugin name="diana_gripper" />
+  <!-- <xacro:diana_gripper_control_plugin name="diana_gripper" /> -->
 
 
 <xacro:macro name="diana_gripper" params="name" >
@@ -106,6 +106,12 @@
   </transmission>
 
   <link name="${name}/left_finger_connector" >
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.011" />
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001" />
+    </inertial>
+
     <visual>
       <origin xyz="0 0.001 0" rpy="0 -1.571 0" />
       <material name="${name}_left_finger_connector_material" >
@@ -130,6 +136,11 @@
   </joint>
 
   <link name="${name}/left_finger_distal_bracket" >
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.011" />
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001" />
+    </inertial>
     <visual>
       <origin xyz="0 0 -0.0275" rpy="0 0 1.571" />
       <material name="${name}_left_finger_distal_bracket_material" >
@@ -208,6 +219,11 @@
   </transmission>
 
   <link name="${name}/right_finger_connector" >
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.011" />
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001" />
+    </inertial>
     <visual>
       <origin xyz="0 0.001 0" rpy="0 -1.571 0" />
       <material name="${name}_right_finger_connector_material" >
@@ -232,6 +248,11 @@
   </joint>
 
   <link name="${name}/right_finger_distal_bracket" >
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.011" />
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001" />
+    </inertial>
     <visual>
       <origin xyz="0 0 -0.0275" rpy="0 0 1.571" />
       <material name="${name}_right_finger_distal_bracket_material" >
@@ -285,6 +306,12 @@
   <xacro:finray_fingertips/> 
   <xacro:finray_ridges_fingertips/>
   <xacro:simple_fingertips/>  -->
+
+<!--
+  diana_gripper/left_fingertip
+  diana_gripper/right_fingertip
+-->
+
   <xacro:tcp/> 
 
   <xacro:imu_gy521 parent="${name}/left_finger_tip_mount" name="${name}/left_finger_imu" >
