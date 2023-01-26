@@ -1,0 +1,3 @@
+# matches the physical arduino nano in the hardware
+# Identified with `udevadm info -a -n /dev/ttyACM0`
+KERNEL=="ttyACM[0-9]*", ATTRS{serial}=="5CBBDEFC50555435312E3120FF03132A", MODE:="0666", SYMLINK+="diana_gripper"

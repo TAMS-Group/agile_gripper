@@ -58,6 +58,12 @@ as the HX-711 is specified for 2.7..5.5V. Using a stabilitzed
 is too noisy for that, and another power supply would add to the
 hardware complexity.
 
+## udev device detection
+
+The arduino transmits a (unique?) id that can be matched in
+udev to identify the serial device. doc/10-diana-gripper-udev.rules
+provides a rule file that can be copied to /etc/udev/rules.d/ to add a symlink
+/dev/diana_gripper pointing to the correct device.
 
 ## Arduino Nano 33 IOT I2C Problems
 
