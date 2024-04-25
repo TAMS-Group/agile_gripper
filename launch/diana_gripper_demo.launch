@@ -9,6 +9,8 @@
   <arg name="debug"        default="false" />
   <arg name="start_world_diana_gripper_tf_publisher"  default="true" />
   <arg name="start_gui" default="true" />
+  <arg name="start_gui_individual" default="false" />
+  <arg name="tactile_sensors" default="true" />
 
 
   <!-- upload the robot xacro/urdf to the param server -->
@@ -59,13 +61,24 @@
   </node>
   -->
 
-
   <group if="$(arg start_gui)">
-    <node pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" name="joint_state_publisher_gui" 
-          respawn="false">
-      <param name="rate" value="10.0" />
-      <remap from="joint_states" to="diana_gripper/joint_goals" />
-    </node>
+      <group if="$(arg start_gui_individual)">
+      <node pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" name="joint_state_publisher_gui" 
+            respawn="false">
+            <param name="rate" value="10.0" />
+            <remap from="joint_states" to="diana_gripper/joint_goals" />
+      </node>
+      </group>
+      <group unless="$(arg start_gui_individual)">
+            <param name="fake_parallel_gripper_description" 
+         command="$(find xacro)/xacro $(find diana_gripper)/urdf/fake_parallel_gripper.xacro" />
+            <node pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" 
+        name="fake_parallel_gripper_joint_state_publisher" respawn="false">
+                  <param name="rate" value="30.0" />
+                  <remap from="robot_description" to="fake_parallel_gripper_description" />
+                  <remap from="joint_states" to="diana_gripper/simple_goal" />
+            </node>
+      </group>
   </group>
 
 
@@ -78,5 +91,11 @@
 
   <node name="rviz" pkg="rviz" type="rviz" respawn="false" output="screen"
         args="-d $(find diana_gripper)/config/diana_gripper_demo.rviz" />
+
+  
+  <group if="$(arg tactile_sensors)">
+    <include file="$(find tams_tactile_sensor_array)/launch/tactile_sensor_diana.launch">
+    </include>
+  </group>
 
 </launch>
