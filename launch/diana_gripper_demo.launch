@@ -11,6 +11,9 @@
   <arg name="start_gui" default="true" />
   <arg name="start_gui_individual" default="false" />
   <arg name="tactile_sensors" default="true" />
+  <arg name="plotjuggler" default="true" />
+  <arg name="layout" default="plotjuggler-layout.xml" />
+  <arg name="priority" default="20" />
 
 
   <!-- upload the robot xacro/urdf to the param server -->
@@ -98,4 +101,12 @@
     </include>
   </group>
 
+  <group if="$(arg plotjuggler)">
+      <node name="plotjuggler_with_layout" 
+        pkg="plotjuggler"
+        type="plotjuggler"
+        args="--layout $(find diana_gripper)/config/$(arg layout)" 
+        launch-prefix="nice -n $(arg priority)"
+  />
+  </group>
 </launch>

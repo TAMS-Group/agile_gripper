@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <root>
- <tabbed_widget name="Main Window" parent="main_window">
-  <Tab containers="1" tab_name="tab1">
+ <tabbed_widget parent="main_window" name="Main Window">
+  <Tab containers="1" tab_name="Position">
    <Container>
-    <DockSplitter orientation="-" count="2" sizes="0.500482;0.499518">
+    <DockSplitter orientation="-" sizes="0.500497;0.499503" count="2">
      <DockArea name="...">
-      <plot flip_y="false" style="LinesAndDots" mode="TimeSeries" flip_x="false">
-       <range bottom="-0.339738" left="9.421039" right="10.230808" top="0.335136"/>
+      <plot style="LinesAndDots" mode="TimeSeries" flip_x="false" flip_y="false">
+       <range bottom="-0.009511" right="12.412733" left="0.002951" top="0.003375"/>
        <limitY/>
        <curve color="#1f77b4" name="/diana_gripper/joint_states/diana_gripper/LFJ1/position"/>
        <curve color="#d62728" name="/diana_gripper/joint_states/diana_gripper/LFJ2/position"/>
@@ -15,8 +15,8 @@
       </plot>
      </DockArea>
      <DockArea name="...">
-      <plot flip_y="false" style="LinesAndDots" mode="TimeSeries" flip_x="false">
-       <range bottom="-0.786165" left="9.421039" right="10.230808" top="0.019175"/>
+      <plot style="LinesAndDots" mode="TimeSeries" flip_x="false" flip_y="false">
+       <range bottom="-0.322136" right="12.412733" left="0.002951" top="0.322136"/>
        <limitY/>
        <curve color="#f14cc1" name="/diana_gripper/joint_states/diana_gripper/RFJ2/velocity"/>
        <curve color="#9467bd" name="/diana_gripper/joint_states/diana_gripper/RFJ1/velocity"/>
@@ -27,37 +27,13 @@
     </DockSplitter>
    </Container>
   </Tab>
-  <Tab containers="1" tab_name="tab2">
+  <Tab containers="1" tab_name="Motors">
    <Container>
-    <DockSplitter orientation="-" count="2" sizes="0.500482;0.499518">
-     <DockArea name="...">
-      <plot flip_y="false" style="LinesAndDots" mode="TimeSeries" flip_x="false">
-       <range bottom="-0.020400" left="9.421039" right="10.230808" top="-0.008096"/>
-       <limitY/>
-       <curve color="#1f77b4" name="/diana_gripper/palm_imu/imu_raw/angular_velocity/x"/>
-       <curve color="#d62728" name="/diana_gripper/palm_imu/imu_raw/angular_velocity/y"/>
-       <curve color="#1ac938" name="/diana_gripper/palm_imu/imu_raw/angular_velocity/z"/>
-      </plot>
-     </DockArea>
-     <DockArea name="...">
-      <plot flip_y="false" style="LinesAndDots" mode="TimeSeries" flip_x="false">
-       <range bottom="-0.191093" left="9.421039" right="10.230808" top="5.018254"/>
-       <limitY/>
-       <curve color="#ff7f0e" name="/diana_gripper/palm_imu/imu_raw/linear_acceleration/x"/>
-       <curve color="#f14cc1" name="/diana_gripper/palm_imu/imu_raw/linear_acceleration/y"/>
-       <curve color="#9467bd" name="/diana_gripper/palm_imu/imu_raw/linear_acceleration/z"/>
-      </plot>
-     </DockArea>
-    </DockSplitter>
-   </Container>
-  </Tab>
-  <Tab containers="1" tab_name="tab3">
-   <Container>
-    <DockSplitter orientation="-" count="2" sizes="0.500482;0.499518">
-     <DockSplitter orientation="|" count="2" sizes="0.5;0.5">
+    <DockSplitter orientation="-" sizes="0.500497;0.499503" count="2">
+     <DockSplitter orientation="|" sizes="0.502442;0.497558" count="2">
       <DockArea name="...">
-       <plot flip_y="false" style="LinesAndDots" mode="TimeSeries" flip_x="false">
-        <range bottom="60.912114" left="9.421039" right="10.230808" top="61.025000"/>
+       <plot style="LinesAndDots" mode="TimeSeries" flip_x="false" flip_y="false">
+        <range bottom="74.950000" right="22.022320" left="0.102002" top="77.050000"/>
         <limitY/>
         <curve color="#17becf" name="/diana_gripper/voltages/axes.0"/>
         <curve color="#bcbd22" name="/diana_gripper/voltages/axes.1"/>
@@ -66,8 +42,8 @@
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_y="false" style="LinesAndDots" mode="TimeSeries" flip_x="false">
-        <range bottom="-246.400000" left="9.421039" right="10.230808" top="10102.400000"/>
+       <plot style="LinesAndDots" mode="TimeSeries" flip_x="false" flip_y="false">
+        <range bottom="-249.600000" right="22.023685" left="0.102076" top="10233.600000"/>
         <limitY/>
         <curve color="#17becf" name="/diana_gripper/currents/axes.0"/>
         <curve color="#bcbd22" name="/diana_gripper/currents/axes.1"/>
@@ -76,10 +52,10 @@
        </plot>
       </DockArea>
      </DockSplitter>
-     <DockSplitter orientation="|" count="2" sizes="0.5;0.5">
+     <DockSplitter orientation="|" sizes="0.502442;0.497558" count="2">
       <DockArea name="...">
-       <plot flip_y="false" style="LinesAndDots" mode="TimeSeries" flip_x="false">
-        <range bottom="20.975000" left="9.421039" right="10.230808" top="22.025000"/>
+       <plot style="LinesAndDots" mode="TimeSeries" flip_x="false" flip_y="false">
+        <range bottom="22.900000" right="22.019938" left="0.038141" top="27.100000"/>
         <limitY/>
         <curve color="#1ac938" name="/diana_gripper/temperatures/axes.0"/>
         <curve color="#ff7f0e" name="/diana_gripper/temperatures/axes.1"/>
@@ -88,8 +64,8 @@
        </plot>
       </DockArea>
       <DockArea name="...">
-       <plot flip_y="false" style="LinesAndDots" mode="TimeSeries" flip_x="false">
-        <range bottom="-83.600000" left="9.421039" right="10.230808" top="67.600000"/>
+       <plot style="LinesAndDots" mode="TimeSeries" flip_x="false" flip_y="false">
+        <range bottom="-42.400000" right="22.046480" left="0.005191" top="58.400000"/>
         <limitY/>
         <curve color="#1ac938" name="/diana_gripper/torques/axes.0"/>
         <curve color="#ff7f0e" name="/diana_gripper/torques/axes.1"/>
@@ -101,12 +77,12 @@
     </DockSplitter>
    </Container>
   </Tab>
-  <Tab containers="1" tab_name="tab2">
+  <Tab containers="1" tab_name="Forces">
    <Container>
-    <DockSplitter orientation="-" count="2" sizes="0.500482;0.499518">
+    <DockSplitter orientation="-" sizes="0.500497;0.499503" count="2">
      <DockArea name="...">
-      <plot flip_y="false" style="Lines" mode="TimeSeries" flip_x="false">
-       <range bottom="-256910.000000" left="9.421039" right="10.230808" top="218698.000000"/>
+      <plot style="Lines" mode="TimeSeries" flip_x="false" flip_y="false">
+       <range bottom="-2670.192752" right="19.426351" left="0.000000" top="1302.462894"/>
        <limitY/>
        <curve color="#1f77b4" name="/diana_gripper/forces_raw/axes.0"/>
        <curve color="#d62728" name="/diana_gripper/forces_raw/axes.1"/>
@@ -115,8 +91,8 @@
       </plot>
      </DockArea>
      <DockArea name="...">
-      <plot flip_y="false" style="Dots" mode="TimeSeries" flip_x="false">
-       <range bottom="-83.600000" left="9.421039" right="10.230808" top="67.600000"/>
+      <plot style="Lines" mode="TimeSeries" flip_x="false" flip_y="false">
+       <range bottom="-42.400000" right="19.432860" left="0.005191" top="58.400000"/>
        <limitY/>
        <curve color="#f14cc1" name="/diana_gripper/torques/axes.0"/>
        <curve color="#9467bd" name="/diana_gripper/torques/axes.1"/>
@@ -127,7 +103,121 @@
     </DockSplitter>
    </Container>
   </Tab>
-  <currentTabIndex index="0"/>
+  <Tab containers="1" tab_name="Tactile">
+   <Container>
+    <DockSplitter orientation="-" sizes="0.500497;0.499503" count="2">
+     <DockArea name="...">
+      <plot style="Lines" mode="TimeSeries" flip_x="false" flip_y="false">
+       <range bottom="23.625000" right="10.976830" left="0.007803" top="1047.375000"/>
+       <limitY/>
+       <curve color="#1f77b4" name="/tactile_sensor_data/1/data.0"/>
+       <curve color="#d62728" name="/tactile_sensor_data/1/data.1"/>
+       <curve color="#1ac938" name="/tactile_sensor_data/1/data.10"/>
+       <curve color="#ff7f0e" name="/tactile_sensor_data/1/data.11"/>
+       <curve color="#f14cc1" name="/tactile_sensor_data/1/data.12"/>
+       <curve color="#9467bd" name="/tactile_sensor_data/1/data.13"/>
+       <curve color="#17becf" name="/tactile_sensor_data/1/data.14"/>
+       <curve color="#bcbd22" name="/tactile_sensor_data/1/data.15"/>
+       <curve color="#1f77b4" name="/tactile_sensor_data/1/data.16"/>
+       <curve color="#d62728" name="/tactile_sensor_data/1/data.17"/>
+       <curve color="#1ac938" name="/tactile_sensor_data/1/data.18"/>
+       <curve color="#ff7f0e" name="/tactile_sensor_data/1/data.19"/>
+       <curve color="#f14cc1" name="/tactile_sensor_data/1/data.2"/>
+       <curve color="#9467bd" name="/tactile_sensor_data/1/data.20"/>
+       <curve color="#17becf" name="/tactile_sensor_data/1/data.21"/>
+       <curve color="#bcbd22" name="/tactile_sensor_data/1/data.22"/>
+       <curve color="#1f77b4" name="/tactile_sensor_data/1/data.23"/>
+       <curve color="#d62728" name="/tactile_sensor_data/1/data.24"/>
+       <curve color="#1ac938" name="/tactile_sensor_data/1/data.25"/>
+       <curve color="#ff7f0e" name="/tactile_sensor_data/1/data.26"/>
+       <curve color="#f14cc1" name="/tactile_sensor_data/1/data.27"/>
+       <curve color="#9467bd" name="/tactile_sensor_data/1/data.28"/>
+       <curve color="#17becf" name="/tactile_sensor_data/1/data.29"/>
+       <curve color="#bcbd22" name="/tactile_sensor_data/1/data.3"/>
+       <curve color="#1f77b4" name="/tactile_sensor_data/1/data.30"/>
+       <curve color="#d62728" name="/tactile_sensor_data/1/data.31"/>
+       <curve color="#1ac938" name="/tactile_sensor_data/1/data.32"/>
+       <curve color="#ff7f0e" name="/tactile_sensor_data/1/data.33"/>
+       <curve color="#f14cc1" name="/tactile_sensor_data/1/data.34"/>
+       <curve color="#9467bd" name="/tactile_sensor_data/1/data.35"/>
+       <curve color="#17becf" name="/tactile_sensor_data/1/data.4"/>
+       <curve color="#bcbd22" name="/tactile_sensor_data/1/data.5"/>
+       <curve color="#1f77b4" name="/tactile_sensor_data/1/data.6"/>
+       <curve color="#d62728" name="/tactile_sensor_data/1/data.7"/>
+       <curve color="#1ac938" name="/tactile_sensor_data/1/data.8"/>
+       <curve color="#ff7f0e" name="/tactile_sensor_data/1/data.9"/>
+      </plot>
+     </DockArea>
+     <DockArea name="...">
+      <plot style="Lines" mode="TimeSeries" flip_x="false" flip_y="false">
+       <range bottom="633.500000" right="10.981149" left="0.012348" top="1032.500000"/>
+       <limitY/>
+       <curve color="#f14cc1" name="/tactile_sensor_data/2/data.0"/>
+       <curve color="#9467bd" name="/tactile_sensor_data/2/data.1"/>
+       <curve color="#17becf" name="/tactile_sensor_data/2/data.10"/>
+       <curve color="#bcbd22" name="/tactile_sensor_data/2/data.11"/>
+       <curve color="#1f77b4" name="/tactile_sensor_data/2/data.12"/>
+       <curve color="#d62728" name="/tactile_sensor_data/2/data.13"/>
+       <curve color="#1ac938" name="/tactile_sensor_data/2/data.14"/>
+       <curve color="#ff7f0e" name="/tactile_sensor_data/2/data.15"/>
+       <curve color="#f14cc1" name="/tactile_sensor_data/2/data.16"/>
+       <curve color="#9467bd" name="/tactile_sensor_data/2/data.17"/>
+       <curve color="#17becf" name="/tactile_sensor_data/2/data.18"/>
+       <curve color="#bcbd22" name="/tactile_sensor_data/2/data.19"/>
+       <curve color="#1f77b4" name="/tactile_sensor_data/2/data.2"/>
+       <curve color="#d62728" name="/tactile_sensor_data/2/data.20"/>
+       <curve color="#1ac938" name="/tactile_sensor_data/2/data.21"/>
+       <curve color="#ff7f0e" name="/tactile_sensor_data/2/data.22"/>
+       <curve color="#f14cc1" name="/tactile_sensor_data/2/data.23"/>
+       <curve color="#9467bd" name="/tactile_sensor_data/2/data.24"/>
+       <curve color="#17becf" name="/tactile_sensor_data/2/data.25"/>
+       <curve color="#bcbd22" name="/tactile_sensor_data/2/data.26"/>
+       <curve color="#1f77b4" name="/tactile_sensor_data/2/data.27"/>
+       <curve color="#d62728" name="/tactile_sensor_data/2/data.28"/>
+       <curve color="#1ac938" name="/tactile_sensor_data/2/data.29"/>
+       <curve color="#ff7f0e" name="/tactile_sensor_data/2/data.3"/>
+       <curve color="#f14cc1" name="/tactile_sensor_data/2/data.30"/>
+       <curve color="#9467bd" name="/tactile_sensor_data/2/data.31"/>
+       <curve color="#17becf" name="/tactile_sensor_data/2/data.32"/>
+       <curve color="#bcbd22" name="/tactile_sensor_data/2/data.33"/>
+       <curve color="#1f77b4" name="/tactile_sensor_data/2/data.34"/>
+       <curve color="#d62728" name="/tactile_sensor_data/2/data.35"/>
+       <curve color="#1ac938" name="/tactile_sensor_data/2/data.4"/>
+       <curve color="#ff7f0e" name="/tactile_sensor_data/2/data.5"/>
+       <curve color="#f14cc1" name="/tactile_sensor_data/2/data.6"/>
+       <curve color="#9467bd" name="/tactile_sensor_data/2/data.7"/>
+       <curve color="#17becf" name="/tactile_sensor_data/2/data.8"/>
+       <curve color="#bcbd22" name="/tactile_sensor_data/2/data.9"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab containers="1" tab_name="IMU">
+   <Container>
+    <DockSplitter orientation="-" sizes="0.500497;0.499503" count="2">
+     <DockArea name="...">
+      <plot style="LinesAndDots" mode="TimeSeries" flip_x="false" flip_y="false">
+       <range bottom="-0.100000" right="0.000000" left="0.000000" top="0.100000"/>
+       <limitY/>
+       <curve color="#1f77b4" name="/diana_gripper/palm_imu/imu_raw/angular_velocity/x"/>
+       <curve color="#d62728" name="/diana_gripper/palm_imu/imu_raw/angular_velocity/y"/>
+       <curve color="#1ac938" name="/diana_gripper/palm_imu/imu_raw/angular_velocity/z"/>
+      </plot>
+     </DockArea>
+     <DockArea name="...">
+      <plot style="LinesAndDots" mode="TimeSeries" flip_x="false" flip_y="false">
+       <range bottom="-0.100000" right="0.000000" left="0.000000" top="0.100000"/>
+       <limitY/>
+       <curve color="#ff7f0e" name="/diana_gripper/palm_imu/imu_raw/linear_acceleration/x"/>
+       <curve color="#f14cc1" name="/diana_gripper/palm_imu/imu_raw/linear_acceleration/y"/>
+       <curve color="#9467bd" name="/diana_gripper/palm_imu/imu_raw/linear_acceleration/z"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <currentTabIndex index="1"/>
  </tabbed_widget>
  <use_relative_time_offset enabled="1"/>
  <!-- - - - - - - - - - - - - - - -->
