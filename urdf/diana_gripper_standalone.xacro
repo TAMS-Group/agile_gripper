@@ -57,7 +57,7 @@
 
   -->
 
-  <!-- a digit sensor on the right finger -->
+  <!-- a digit sensor on the right finger 
 
   <xacro:digit_fingertip name="diana_gripper/right_finger_digit_sensor" />
 
@@ -66,7 +66,7 @@
     <child  link="diana_gripper/right_finger_digit_sensor" />
     <origin xyz="0 0 0" rpy="0 0 1.571" />
   </joint>
-
+-->
   <!-- a simple (pyramid shape) fingertip on the left finger -->
 
   <xacro:simple_fingertip name="diana_gripper/left_finger_simple_fingertip" />
@@ -79,6 +79,7 @@
   </joint>
 
   <!-- uncomment for the simple (pyramid) fingertip on the right finger:
+  -->
 
   <xacro:simple_fingertip name="diana_gripper/right_finger_simple_fingertip" />
 
@@ -88,6 +89,5 @@
     <origin xyz="0 0 0" rpy="0 0 -1.571" />
   </joint>
  
-  -->
 
 </robot>
