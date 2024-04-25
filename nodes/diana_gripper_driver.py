@@ -51,37 +51,41 @@ text_command = "?" # help
 DEG2RAD = math.pi / 180.0
 RAD2DEG = 180.0 / math.pi
 
+def init_joints(hand_name_='diana_gripper'):
+    global hand_name, n_joints, joint_names, joint_index
+    global js, js_errors
+    # left finger / right finger, J2 = proximal J1 = distal  (same as Shadow hand)
+    #
+    hand_name = hand_name_
+    n_joints = 4
+    short_joint_names  = ['LFJ2', 'LFJ1', 'RFJ2', 'RFJ1' ]  
+    joint_names  = [hand_name + '/' + s for s in short_joint_names]
+    joint_index = {}
 
-# left finger / right finger, J2 = proximal J1 = distal  (same as Shadow hand)
-#
-hand_name    = 'diana_gripper'
-n_joints = 4
-short_joint_names  = ['LFJ2', 'LFJ1', 'RFJ2', 'RFJ1' ]  
-joint_names  = [hand_name + '/' + s for s in short_joint_names]
-joint_index = {}
+    for j in range( len(short_joint_names) ):
+        joint_index[ short_joint_names[j]] = j
+    for j in range( len(joint_names) ):
+        joint_index[ joint_names[j]] = j
 
-for j in range( len(short_joint_names) ):
-    joint_index[ short_joint_names[j]] = j
-for j in range( len(joint_names) ):
-    joint_index[ joint_names[j]] = j
-
-if verbose > 3:
-    print( joint_index ) # debugging only
+    if verbose > 3:
+        print( joint_index ) # debugging only
 
 
-# JointState and raw sensor Joy messages
-#
-js           = sensor_msgs.msg.JointState()  # position + velocities + torques (radians, rad/s, Nm)
-js.name      = joint_names
-js.position  = np.zeros( n_joints )
-js.velocity  = np.zeros( n_joints )
-js.effort    = np.zeros( n_joints )
+    # JointState and raw sensor Joy messages
+    #
+    js           = sensor_msgs.msg.JointState()  # position + velocities + torques (radians, rad/s, Nm)
+    js.name      = joint_names
+    js.position  = np.zeros( n_joints )
+    js.velocity  = np.zeros( n_joints )
+    js.effort    = np.zeros( n_joints )
 
-js_errors    = sensor_msgs.msg.JointState()  # current pos + current vel + pos error in one message
-js_errors.name      = joint_names;
-js_errors.position  = np.zeros( n_joints )
-js_errors.velocity  = np.zeros( n_joints )
-js_errors.effort    = np.zeros( n_joints )
+    js_errors    = sensor_msgs.msg.JointState()  # current pos + current vel + pos error in one message
+    js_errors.name      = joint_names;
+    js_errors.position  = np.zeros( n_joints )
+    js_errors.velocity  = np.zeros( n_joints )
+    js_errors.effort    = np.zeros( n_joints )
+
+init_joints()
 
 torques_joy  = sensor_msgs.msg.Joy()         # raw servo torques (counts)
 temp_joy     = sensor_msgs.msg.Joy()         # temperatures
@@ -464,6 +468,7 @@ def diana_gripper_driver():
     global previous_positions, previous_positions_stamp
     global previous_torques, previous_torques_stamp
     global ser, ave_ser_in_waiting
+    global hand_name, joint_index, joint_names, n_joints
 
     global n_sensors, forces_bias, forces_gains
     global set_zero_bias_in_progress, set_zero_bias_start_time, set_zero_bias_interval, set_zero_bias_channels
@@ -488,12 +493,15 @@ def diana_gripper_driver():
     if rospy.has_param( '~verbose' ):
         verbose = rospy.get_param( '~verbose' )
 
+    if rospy.has_param( '~hand_name' ):
+        init_joints(rospy.get_param( '~hand_name' ))
+
     rate_hz = 500.0; 
     if rospy.has_param( '~rate' ):
         rate_hz = rospy.get_param( '~rate' )
     rate = rospy.Rate( rate_hz )
     print( '... loop rate is ' + str(rate_hz) + ' hz.' )
-    rospy.logerr( '... loop rate is ' + str(rate_hz) + ' hz.' )
+    # rospy.logerr( '... loop rate is ' + str(rate_hz) + ' hz.' )
 
 
     # Serial-port stuff 
