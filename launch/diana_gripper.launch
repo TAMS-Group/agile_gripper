@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="gripper_port_name" default="/dev/diana_gripper"/>        
+        
+    <!-- the driver node, talking to the gripper using the specifed port and (virtual) baudrate -->
+    <node pkg="diana_gripper" type="diana_gripper_driver.py" name="diana_gripper" output="screen" >
+        <param name="rate_hz" value="1000" />
+        <param name="baud_rate" value="115200" />
+        <param name="port_name" value="$(arg gripper_port_name)" />
+        <param name="verbose" value="1" />
+        <remap from="/diana_gripper/joint_states" to="/joint_states" />
+    </node>
+
+    <!-- the gripper FollowJointTrajectoryAction server (e.g. needed for Moveit) -->
+    <node pkg="diana_gripper" type="diana_gripper_fjtas.py" name="diana_gripper_fjtas" output="screen" >
+        <remap from="/diana_gripper_fjtas/joint_states" to="/joint_states" />
+        <remap from="/diana_gripper_fjtas/joint_goals" to="/diana_gripper/joint_goals" />
+    </node>
+
+</launch>
