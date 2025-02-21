@@ -227,7 +227,7 @@ int  sid = 3;
 // (angular resolution ~ 0.1 degrees), or about 6800 counts/sec.
 // 
 int wpspeed = 500; // 10..100 = rather slow; 1000 mid, 5000 fast
-int wpaccel = 100; // 10 noticeably soft, 100 ok, 1000 fast
+int wpaccel = 500; // 10 noticeably soft, 100 ok, 1000 fast
 int wptime = 1000;
 
 int verbose = 2;
